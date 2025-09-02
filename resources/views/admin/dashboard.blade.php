@@ -69,8 +69,8 @@
             @forelse($recentProjects as $project)
                 <div class="px-6 py-4">
                     <div class="flex items-center">
-                        @if($project->image)
-                            <img src="{{ Storage::url($project->image) }}" alt="{{ $project->title }}" class="w-12 h-12 object-cover rounded mr-4">
+                        @if($project->thumbnail)
+                            <img src="{{ Storage::url($project->thumbnail) }}" alt="{{ $project->title }}" class="w-12 h-12 object-cover rounded mr-4">
                         @else
                             <div class="w-12 h-12 bg-gray-200 rounded flex items-center justify-center mr-4">
                                 <i class="fas fa-image text-gray-400"></i>
