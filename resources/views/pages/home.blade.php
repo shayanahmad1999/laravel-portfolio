@@ -112,6 +112,60 @@
         </div>
     </section>
 
+    <!-- About Me Section -->
+    <section class="py-20 fade-in-scroll">
+        <div class="grid md:grid-cols-2 gap-16 items-center">
+            <div class="fade-in-scroll">
+                <div class="inline-block px-4 py-1 bg-indigo-50 text-indigo-700 rounded-full mb-4 reveal-text">
+                    <div class="flex items-center">
+                        <div class="w-2 h-2 bg-indigo-600 rounded-full mr-2"></div>
+                        <span class="text-sm font-medium">About Me</span>
+                    </div>
+                </div>
+                <h2 class="text-4xl font-bold mb-6 animated-gradient">{{ isset($about) && $about->title ? $about->title : 'Who I Am' }}</h2>
+                <div class="text-gray-600 mb-8 leading-relaxed">
+                    {!! isset($about) && $about->content ? $about->content : 'I am a passionate web developer with experience in creating modern, responsive web applications.' !!}
+                </div>
+                
+                <div class="grid grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center hover-lift">
+                        <div class="text-3xl font-bold text-indigo-600 mb-2">{{ isset($about) && $about->years_experience ? $about->years_experience : '5+' }}</div>
+                        <div class="text-gray-600 text-sm">Years Experience</div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center hover-lift">
+                        <div class="text-3xl font-bold text-indigo-600 mb-2">{{ isset($about) && $about->completed_projects ? $about->completed_projects : '100+' }}</div>
+                        <div class="text-gray-600 text-sm">Projects Done</div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center hover-lift">
+                        <div class="text-3xl font-bold text-indigo-600 mb-2">{{ isset($about) && $about->companies_worked ? $about->companies_worked : '12+' }}</div>
+                        <div class="text-gray-600 text-sm">Companies</div>
+                    </div>
+                </div>
+                
+                @if(isset($about) && $about->resume_link)
+                <a href="{{ $about->resume_link }}" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-50 text-indigo-700 rounded-xl hover:bg-indigo-100 transition-colors">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Download Resume</span>
+                </a>
+                @endif
+            </div>
+            
+            <div class="fade-in-scroll hidden md:block" style="transition-delay: 0.2s;">
+                <div class="relative">
+                    <div class="absolute -top-10 -left-10 w-32 h-32 bg-indigo-100 rounded-full floating opacity-70"></div>
+                    <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-purple-100 rounded-full floating opacity-70" style="animation-delay: 1s;"></div>
+                    <div class="img-hover-zoom rounded-2xl overflow-hidden shadow-xl border border-gray-100">
+                        @if(isset($about) && $about->image)
+                            <img src="{{ asset('storage/' . $about->image) }}" alt="About Me" class="w-full h-auto">
+                        @else
+                            <img src="/images/neat.png" alt="About Me" class="w-full h-auto">
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
     <!-- Services Section -->
     <section class="py-20 fade-in-scroll">
         <div class="text-center mb-16">

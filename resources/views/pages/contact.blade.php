@@ -103,7 +103,7 @@
                                 </div>
                                 <div>
                                     <h4 class="font-medium text-lg">Location</h4>
-                                    <p class="text-indigo-100">Your City, Country</p>
+                                    <p class="text-indigo-100">{{ isset($settings) && $settings->contact_address ? $settings->contact_address : 'Your City, Country' }}</p>
                                 </div>
                             </div>
 
@@ -113,7 +113,7 @@
                                 </div>
                                 <div>
                                     <h4 class="font-medium text-lg">Email</h4>
-                                    <p class="text-indigo-100">contact@example.com</p>
+                                    <p class="text-indigo-100">{{ isset($settings) && $settings->contact_email ? $settings->contact_email : 'contact@example.com' }}</p>
                                 </div>
                             </div>
                             
@@ -123,7 +123,7 @@
                                 </div>
                                 <div>
                                     <h4 class="font-medium text-lg">Phone</h4>
-                                    <p class="text-indigo-100">+1 (123) 456-7890</p>
+                                    <p class="text-indigo-100">{{ isset($settings) && $settings->contact_phone ? $settings->contact_phone : '+1 (123) 456-7890' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -132,22 +132,36 @@
                     <div class="mt-12 relative z-10">
                         <h4 class="font-medium mb-4 text-lg reveal-text">Connect With Me</h4>
                         <div class="flex gap-4" data-stagger="container">
-                            <a href="#"
+                            @if(isset($settings) && $settings->github_url)
+                            <a href="{{ $settings->github_url }}"
                                 class="bg-white/20 w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors hover-scale stagger-item shadow-lg">
                                 <i class="fab fa-github text-lg"></i>
                             </a>
-                            <a href="#"
+                            @endif
+                            @if(isset($settings) && $settings->linkedin_url)
+                            <a href="{{ $settings->linkedin_url }}"
                                 class="bg-white/20 w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors hover-scale stagger-item shadow-lg">
                                 <i class="fab fa-linkedin-in text-lg"></i>
                             </a>
-                            <a href="#"
+                            @endif
+                            @if(isset($settings) && $settings->twitter_url)
+                            <a href="{{ $settings->twitter_url }}"
                                 class="bg-white/20 w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors hover-scale stagger-item shadow-lg">
                                 <i class="fab fa-twitter text-lg"></i>
                             </a>
-                            <a href="#"
+                            @endif
+                            @if(isset($settings) && $settings->instagram_url)
+                            <a href="{{ $settings->instagram_url }}"
                                 class="bg-white/20 w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors hover-scale stagger-item shadow-lg">
                                 <i class="fab fa-instagram text-lg"></i>
                             </a>
+                            @endif
+                            @if(isset($settings) && $settings->facebook_url)
+                            <a href="{{ $settings->facebook_url }}"
+                                class="bg-white/20 w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors hover-scale stagger-item shadow-lg">
+                                <i class="fab fa-facebook-f text-lg"></i>
+                            </a>
+                            @endif
                         </div>
                     </div>
                 </div>
