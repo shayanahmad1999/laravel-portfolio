@@ -6,8 +6,9 @@ use App\Models\Category;
 
 class ProjectController extends Controller
 {
-    public function page() {
+    public function page()
+    {
         $categories = Category::orderBy('name')->get();
-        return view('pages.projects', ['title' => 'Projects', 'categories'=>$categories]);
+        return view('pages.projects', ['title' => 'Projects', 'categories' => $categories]);
     }
 }

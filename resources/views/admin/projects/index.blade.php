@@ -37,10 +37,9 @@
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex-shrink-0 h-10 w-10">
-                                    @if ($project->image)
+                                    @if ($project->thumbnail)
                                         <img class="h-10 w-10 rounded-md object-cover"
-                                            src="{{ asset('storage/projects/' . $project->image) }}"
-                                            alt="{{ $project->title }}">
+                                            src="{{ asset('storage/' . $project->thumbnail) }}" alt="{{ $project->title }}">
                                     @else
                                         <div class="h-10 w-10 rounded-md bg-gray-200 flex items-center justify-center">
                                             <i class="fas fa-image text-gray-400"></i>

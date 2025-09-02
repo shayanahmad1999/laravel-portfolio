@@ -28,7 +28,7 @@ class ProjectController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title'        => 'required|string|max:255',
-            'description'  => 'required|string',
+            'body'         => 'required|string',
             'image'        => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'category_id'  => 'required|exists:categories,id',
             'tags'         => 'nullable', // can be string "a,b" or array ["a","b"]
@@ -43,14 +43,14 @@ class ProjectController extends Controller
         }
 
         // Build data safely (whitelist fields)
-        $data = $request->only(['title', 'description', 'category_id', 'tags', 'github', 'demo']);
+        $data = $request->only(['title', 'body', 'category_id', 'tags', 'github', 'demo']);
 
         // Image upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/projects', $imageName);
-            $data['image'] = 'projects/' . $imageName;
+            $image->storeAs('projects', $imageName, 'public');
+            $data['thumbnail'] = 'projects/' . $imageName;
         }
 
         // Normalize tags to an ARRAY
@@ -72,7 +72,7 @@ class ProjectController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title'        => 'required|string|max:255',
-            'description'  => 'required|string',
+            'body'         => 'required|string',
             'image'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'category_id'  => 'required|exists:categories,id',
             'tags'         => 'nullable', // can be string or array
@@ -86,18 +86,18 @@ class ProjectController extends Controller
                 ->withInput();
         }
 
-        $data = $request->only(['title', 'description', 'category_id', 'tags', 'github', 'demo']);
+        $data = $request->only(['title', 'body', 'category_id', 'tags', 'github', 'demo']);
 
         // Image upload (replace old)
         if ($request->hasFile('image')) {
-            if ($project->image) {
-                Storage::delete('public/' . $project->image);
+            if ($project->thumbnail) {
+                Storage::disk('public')->delete($project->thumbnail);
             }
 
             $image = $request->file('image');
             $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/projects', $imageName);
-            $data['image'] = 'projects/' . $imageName;
+            $image->storeAs('projects', $imageName, 'public');
+            $data['thumbnail'] = 'projects/' . $imageName;
         }
 
         // Normalize tags to an ARRAY
@@ -113,8 +113,8 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         // Delete project image
-        if ($project->image) {
-            Storage::delete('public/' . $project->image);
+        if ($project->thumbnail) {
+            Storage::disk('public')->delete($project->thumbnail);
         }
 
         $project->delete();
