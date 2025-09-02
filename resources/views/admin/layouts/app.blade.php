@@ -86,6 +86,16 @@
                         <span>Categories</span>
                     </a>
                     
+                    <a href="{{ route('admin.about.index') }}" class="nav-link flex items-center px-4 py-2 rounded-md {{ request()->routeIs('admin.about*') ? 'active' : '' }}">
+                        <i class="fas fa-user mr-3"></i>
+                        <span>About</span>
+                    </a>
+                    
+                    <a href="{{ route('admin.settings.index') }}" class="nav-link flex items-center px-4 py-2 rounded-md {{ request()->routeIs('admin.settings*') ? 'active' : '' }}">
+                        <i class="fas fa-cog mr-3"></i>
+                        <span>Site Settings</span>
+                    </a>
+                    
                     <div class="pt-4 mt-4 border-t border-indigo-700">
                         <a href="{{ route('home') }}" class="nav-link flex items-center px-4 py-2 rounded-md" target="_blank">
                             <i class="fas fa-external-link-alt mr-3"></i>
