@@ -18,11 +18,23 @@
 <body class="bg-gray-50 text-gray-800" style="font-family: 'Poppins', sans-serif;">
     <header class="sticky top-0 z-50 bg-white shadow-sm transition-all">
         <nav class="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between">
-            <a href="{{ route('home') }}" class="font-bold text-xl bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent hover-scale">My Portfolio</a>
+            <a href="{{ route('home') }}" class="font-bold text-xl bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent hover-scale">
+                @if(isset($portfolioOwner))
+                    {{ $portfolioOwner->name }}'s Portfolio
+                @else
+                    My Portfolio
+                @endif
+            </a>
             <ul class="flex gap-8">
-                <li><a href="{{ route('home') }}" class="text-gray-700 hover:text-indigo-600 animated-underline transition-colors {{ request()->routeIs('home') ? 'text-indigo-600' : '' }}">Home</a></li>
-                <li><a href="{{ route('projects.page') }}" class="text-gray-700 hover:text-indigo-600 animated-underline transition-colors {{ request()->routeIs('projects.page') ? 'text-indigo-600' : '' }}">Projects</a></li>
-                <li><a href="{{ route('contact.page') }}" class="text-gray-700 hover:text-indigo-600 animated-underline transition-colors {{ request()->routeIs('contact.page') ? 'text-indigo-600' : '' }}">Contact</a></li>
+                @if(isset($portfolioOwner))
+                    <li><a href="{{ route('portfolio.public', $portfolioOwner->portfolio_slug ?? $portfolioOwner->name) }}" class="text-gray-700 hover:text-indigo-600 animated-underline transition-colors {{ request()->routeIs('portfolio.public') ? 'text-indigo-600' : '' }}">Home</a></li>
+                    <li><a href="{{ route('portfolio.projects', $portfolioOwner->portfolio_slug ?? $portfolioOwner->name) }}" class="text-gray-700 hover:text-indigo-600 animated-underline transition-colors {{ request()->routeIs('portfolio.projects') ? 'text-indigo-600' : '' }}">Projects</a></li>
+                    <li><a href="{{ route('portfolio.contact', $portfolioOwner->portfolio_slug ?? $portfolioOwner->name) }}" class="text-gray-700 hover:text-indigo-600 animated-underline transition-colors {{ request()->routeIs('portfolio.contact') ? 'text-indigo-600' : '' }}">Contact</a></li>
+                @else
+                    <li><a href="{{ route('home') }}" class="text-gray-700 hover:text-indigo-600 animated-underline transition-colors {{ request()->routeIs('home') ? 'text-indigo-600' : '' }}">Home</a></li>
+                    <li><a href="{{ route('projects.page') }}" class="text-gray-700 hover:text-indigo-600 animated-underline transition-colors {{ request()->routeIs('projects.page') ? 'text-indigo-600' : '' }}">Projects</a></li>
+                    <li><a href="{{ route('contact.page') }}" class="text-gray-700 hover:text-indigo-600 animated-underline transition-colors {{ request()->routeIs('contact.page') ? 'text-indigo-600' : '' }}">Contact</a></li>
+                @endif
             </ul>
         </nav>
     </header>
@@ -67,9 +79,15 @@
             <div>
                 <h3 class="font-bold mb-4">Quick Links</h3>
                 <ul class="space-y-2">
-                    <li><a href="{{ route('home') }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Home</a></li>
-                    <li><a href="{{ route('projects.page') }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Projects</a></li>
-                    <li><a href="{{ route('contact.page') }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Contact</a></li>
+                    @if(isset($portfolioOwner))
+                        <li><a href="{{ route('portfolio.public', $portfolioOwner->portfolio_slug ?? $portfolioOwner->name) }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Home</a></li>
+                        <li><a href="{{ route('portfolio.projects', $portfolioOwner->portfolio_slug ?? $portfolioOwner->name) }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Projects</a></li>
+                        <li><a href="{{ route('portfolio.contact', $portfolioOwner->portfolio_slug ?? $portfolioOwner->name) }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Contact</a></li>
+                    @else
+                        <li><a href="{{ route('home') }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Home</a></li>
+                        <li><a href="{{ route('projects.page') }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Projects</a></li>
+                        <li><a href="{{ route('contact.page') }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Contact</a></li>
+                    @endif
                 </ul>
             </div>
             <div>

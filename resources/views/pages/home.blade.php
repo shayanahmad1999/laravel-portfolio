@@ -326,7 +326,11 @@
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             // Fetch and render skills
-            const res = await fetch('{{ route('ajax.skills') }}');
+            let skillsUrl = '{{ route('ajax.skills') }}';
+            @if(isset($userId) && $userId)
+                skillsUrl += '?user_id={{ $userId }}';
+            @endif
+            const res = await fetch(skillsUrl);
             const skills = await res.json();
             const container = document.getElementById('skills-container');
 
