@@ -12,10 +12,16 @@ class ContactMail extends Mailable
 
     public array $payload;
 
-    public function __construct(array $payload){ $this->payload = $payload; }
+    public function __construct(array $payload)
+    {
+        $this->payload = $payload;
+    }
 
-    public function build(){
-        return $this->subject('New Portfolio Contact')
+    public function build()
+    {
+        return $this->subject('📨 New Contact Message')
+            ->from(config('mail.from.address'), config('mail.from.name'))
+            ->replyTo($this->payload['email'], $this->payload['name'])
             ->view('emails.contact');
     }
 }
