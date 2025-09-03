@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -16,7 +15,7 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = Project::with('category')
-            ->byUserId()
+            ->where('user_id', auth()->id())
             ->latest()
             ->paginate(10);
         return view('admin.projects.index', compact('projects'));
@@ -24,15 +23,15 @@ class ProjectController extends Controller
 
     public function create()
     {
-        $categories = Category::byUserId()->get();
+        $categories = Category::all();
         return view('admin.projects.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
         // Add user_id to the request data
-        $request->merge(['user_id' => Auth::id()]);
-
+        $request->merge(['user_id' => auth()->id()]);
+        
         $validator = Validator::make($request->all(), [
             'title'        => 'required|string|max:255',
             'body'         => 'required|string',
