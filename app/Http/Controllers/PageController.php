@@ -9,9 +9,9 @@ class PageController extends Controller
 {
     public function home()
     {
-        $about = About::where('user_id', auth()->id())->first() ?? new About();
-        $settings = SiteSettings::where('user_id', auth()->id())->first() ?? new SiteSettings();
-        
+        $about = About::byUserId()->first() ?? new About();
+        $settings = SiteSettings::byUserId()->first() ?? new SiteSettings();
+
         return view('pages.home', [
             'title' => 'Home',
             'about' => $about,
@@ -21,8 +21,8 @@ class PageController extends Controller
 
     public function contact()
     {
-        $settings = SiteSettings::where('user_id', auth()->id())->first() ?? new SiteSettings();
-        
+        $settings = SiteSettings::byUserId()->first() ?? new SiteSettings();
+
         return view('pages.contact', [
             'title' => 'Contact',
             'settings' => $settings

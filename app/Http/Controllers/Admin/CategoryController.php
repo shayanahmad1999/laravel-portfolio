@@ -5,13 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::where('user_id', auth()->id())
+        $categories = Category::byUserId()
             ->withCount('projects')
             ->paginate(10);
         return view('admin.categories.index', compact('categories'));
@@ -24,11 +26,17 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
+        $userId = Auth::id();
         // Add user_id to the request data
-        $request->merge(['user_id' => auth()->id()]);
-        
+        $request->merge(['user_id' => $userId]);
+
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:categories',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories')->where(fn($q) => $q->where('user_id', $userId)),
+            ],
         ]);
 
         if ($validator->fails()) {
@@ -73,7 +81,7 @@ class CategoryController extends Controller
             return redirect()->route('admin.categories.index')
                 ->with('error', 'Cannot delete category with associated projects.');
         }
-        
+
         $category->delete();
 
         return redirect()->route('admin.categories.index')

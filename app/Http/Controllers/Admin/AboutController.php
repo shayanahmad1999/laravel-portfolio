@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\About;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -15,7 +16,7 @@ class AboutController extends Controller
      */
     public function index()
     {
-        $about = About::where('user_id', auth()->id())->first() ?? new About();
+        $about = About::byUserId()->first() ?? new About();
         return view('admin.about.index', compact('about'));
     }
 
@@ -40,9 +41,9 @@ class AboutController extends Controller
                 ->withInput();
         }
 
-        $about = About::where('user_id', auth()->id())->first();
+        $about = About::byUserId()->first();
         $data = $request->except('image');
-        $data['user_id'] = auth()->id();
+        $data['user_id'] = Auth::id();
 
         // Handle image upload
         if ($request->hasFile('image')) {

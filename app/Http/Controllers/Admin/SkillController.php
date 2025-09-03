@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Skill;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class SkillController extends Controller
 {
     public function index()
     {
-        $skills = Skill::where('user_id', auth()->id())
+        $skills = Skill::byUserId()
             ->orderBy('level', 'desc')
             ->paginate(10);
         return view('admin.skills.index', compact('skills'));
@@ -25,8 +26,8 @@ class SkillController extends Controller
     public function store(Request $request)
     {
         // Add user_id to the request data
-        $request->merge(['user_id' => auth()->id()]);
-        
+        $request->merge(['user_id' => Auth::id()]);
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'level' => 'required|integer|min:1|max:100',

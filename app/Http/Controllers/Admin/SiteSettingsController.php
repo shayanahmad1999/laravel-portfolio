@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\SiteSettings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class SiteSettingsController extends Controller
@@ -14,7 +15,7 @@ class SiteSettingsController extends Controller
      */
     public function index()
     {
-        $settings = SiteSettings::where('user_id', auth()->id())->first() ?? new SiteSettings();
+        $settings = SiteSettings::byUserId()->first() ?? new SiteSettings();
         return view('admin.settings.index', compact('settings'));
     }
 
@@ -52,10 +53,10 @@ class SiteSettingsController extends Controller
                 ->withInput();
         }
 
-        $settings = SiteSettings::where('user_id', auth()->id())->first();
+        $settings = SiteSettings::byUserId()->first();
         $data = $request->all();
-        $data['user_id'] = auth()->id();
-        
+        $data['user_id'] = Auth::id();
+
         if ($settings) {
             $settings->update($data);
         } else {

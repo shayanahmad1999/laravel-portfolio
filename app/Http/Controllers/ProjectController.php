@@ -8,7 +8,7 @@ class ProjectController extends Controller
 {
     public function page()
     {
-        $categories = Category::where('user_id', auth()->id())
+        $categories = Category::byUserId()
             ->orderBy('name')
             ->get();
         return view('pages.projects', ['title' => 'Projects', 'categories' => $categories]);
