@@ -140,6 +140,46 @@
     </div>
 </div>
 
+<!-- Portfolio Sharing Section -->
+<div class="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <h3 class="font-medium text-gray-700 mb-4">Portfolio Sharing</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <div class="mb-4">
+                <label class="flex items-center">
+                    <input type="checkbox" id="portfolio-public" class="mr-2 rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    <span class="text-sm font-medium text-gray-700">Make portfolio public</span>
+                </label>
+                <p class="text-xs text-gray-500 mt-1">Allow others to view your portfolio without logging in</p>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Portfolio URL</label>
+                <div class="flex">
+                    <input type="text" id="share-url" class="flex-1 rounded-l-lg border-gray-300 border-r-0 bg-gray-50" readonly placeholder="Generate a link first...">
+                    <button id="copy-url" class="px-4 py-2 bg-indigo-600 text-white rounded-r-lg border border-indigo-600 hover:bg-indigo-700 disabled:opacity-50" disabled>
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <button id="generate-link" class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                <i class="fas fa-link mr-2"></i>Generate Share Link
+            </button>
+        </div>
+        
+        <div class="bg-gray-50 rounded-lg p-4">
+            <h4 class="font-medium text-gray-700 mb-2">Sharing Instructions</h4>
+            <ul class="text-sm text-gray-600 space-y-1">
+                <li>• Enable "Make portfolio public" to allow public access</li>
+                <li>• Generate a share link to get a custom URL</li>
+                <li>• Share this URL with potential clients or employers</li>
+                <li>• You can disable public access anytime</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
 <div class="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
     <h3 class="font-medium text-gray-700 mb-4">Quick Actions</h3>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -165,4 +205,91 @@
         </a>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const publicCheckbox = document.getElementById('portfolio-public');
+    const shareUrlInput = document.getElementById('share-url');
+    const copyButton = document.getElementById('copy-url');
+    const generateButton = document.getElementById('generate-link');
+    
+    // Load current sharing info
+    loadSharingInfo();
+    
+    async function loadSharingInfo() {
+        try {
+            const response = await fetch('/portfolio/sharing-info');
+            const data = await response.json();
+            
+            publicCheckbox.checked = data.is_public;
+            if (data.share_url) {
+                shareUrlInput.value = data.share_url;
+                copyButton.disabled = false;
+            }
+        } catch (error) {
+            console.error('Error loading sharing info:', error);
+        }
+    }
+    
+    // Handle public checkbox change
+    publicCheckbox.addEventListener('change', async function() {
+        try {
+            await fetch('/portfolio/visibility', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    is_portfolio_public: this.checked
+                })
+            });
+        } catch (error) {
+            console.error('Error updating visibility:', error);
+            // Revert checkbox on error
+            this.checked = !this.checked;
+        }
+    });
+    
+    // Handle generate link button
+    generateButton.addEventListener('click', async function() {
+        try {
+            const response = await fetch('/portfolio/generate-link', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            });
+            
+            const data = await response.json();
+            shareUrlInput.value = data.share_url;
+            copyButton.disabled = false;
+        } catch (error) {
+            console.error('Error generating link:', error);
+        }
+    });
+    
+    // Handle copy to clipboard
+    copyButton.addEventListener('click', async function() {
+        try {
+            await navigator.clipboard.writeText(shareUrlInput.value);
+            
+            // Show success feedback
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-check"></i>';
+            this.classList.add('bg-green-600');
+            this.classList.remove('bg-indigo-600');
+            
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.classList.remove('bg-green-600');
+                this.classList.add('bg-indigo-600');
+            }, 1500);
+        } catch (error) {
+            console.error('Failed to copy URL:', error);
+        }
+    });
+});
+</script>
+
 @endsection

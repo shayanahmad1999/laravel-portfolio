@@ -79,6 +79,9 @@
             const params = new URLSearchParams();
             if (cat.value) params.set('category', cat.value);
             if (q.value) params.set('search', q.value);
+            @if(isset($userId) && $userId)
+                params.set('user_id', '{{ $userId }}');
+            @endif
 
             try {
                 const res = await fetch(url + '?' + params.toString(), {
