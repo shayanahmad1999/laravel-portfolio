@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\UserScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class About extends Model
 {
-    use HasFactory;
+    use HasFactory, UserScope;
 
     /**
      * The attributes that are mass assignable.
@@ -24,7 +25,7 @@ class About extends Model
         'companies_worked',
         'user_id',
     ];
-    
+
     public function user()
     {
         return $this->belongsTo(User::class);

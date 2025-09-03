@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\UserScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SiteSettings extends Model
 {
-    use HasFactory;
+    use HasFactory, UserScope;
 
     /**
      * The attributes that are mass assignable.
@@ -60,11 +61,11 @@ class SiteSettings extends Model
     public static function get($key, $default = null)
     {
         $setting = self::first();
-        
+
         if (!$setting) {
             return $default;
         }
-        
+
         return $setting->$key ?? $default;
     }
 }
