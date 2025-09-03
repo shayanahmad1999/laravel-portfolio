@@ -22,5 +22,10 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@example.com',
             'password' => Hash::make('password')
         ]);
+        
+        // Call the MultiUserTestSeeder to create test data for multiple users
+        $this->call([
+            MultiUserTestSeeder::class,
+        ]);
     }
 }
