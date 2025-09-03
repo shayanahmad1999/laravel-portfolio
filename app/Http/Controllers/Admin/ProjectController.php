@@ -14,7 +14,10 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::with('category')->latest()->paginate(10);
+        $projects = Project::with('category')
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->paginate(10);
         return view('admin.projects.index', compact('projects'));
     }
 
@@ -26,6 +29,9 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
+        // Add user_id to the request data
+        $request->merge(['user_id' => auth()->id()]);
+        
         $validator = Validator::make($request->all(), [
             'title'        => 'required|string|max:255',
             'body'         => 'required|string',
@@ -43,7 +49,7 @@ class ProjectController extends Controller
         }
 
         // Build data safely (whitelist fields)
-        $data = $request->only(['title', 'body', 'category_id', 'tags', 'github', 'demo']);
+        $data = $request->only(['title', 'body', 'category_id', 'tags', 'github', 'demo', 'user_id']);
 
         // Image upload
         if ($request->hasFile('image')) {

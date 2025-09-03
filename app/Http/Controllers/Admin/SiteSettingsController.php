@@ -14,7 +14,7 @@ class SiteSettingsController extends Controller
      */
     public function index()
     {
-        $settings = SiteSettings::first() ?? new SiteSettings();
+        $settings = SiteSettings::where('user_id', auth()->id())->first() ?? new SiteSettings();
         return view('admin.settings.index', compact('settings'));
     }
 
@@ -52,12 +52,14 @@ class SiteSettingsController extends Controller
                 ->withInput();
         }
 
-        $settings = SiteSettings::first();
+        $settings = SiteSettings::where('user_id', auth()->id())->first();
+        $data = $request->all();
+        $data['user_id'] = auth()->id();
         
         if ($settings) {
-            $settings->update($request->all());
+            $settings->update($data);
         } else {
-            SiteSettings::create($request->all());
+            SiteSettings::create($data);
         }
 
         return redirect()->route('admin.settings.index')

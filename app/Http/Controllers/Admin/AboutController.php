@@ -15,7 +15,7 @@ class AboutController extends Controller
      */
     public function index()
     {
-        $about = About::first() ?? new About();
+        $about = About::where('user_id', auth()->id())->first() ?? new About();
         return view('admin.about.index', compact('about'));
     }
 
@@ -40,8 +40,9 @@ class AboutController extends Controller
                 ->withInput();
         }
 
-        $about = About::first();
+        $about = About::where('user_id', auth()->id())->first();
         $data = $request->except('image');
+        $data['user_id'] = auth()->id();
 
         // Handle image upload
         if ($request->hasFile('image')) {

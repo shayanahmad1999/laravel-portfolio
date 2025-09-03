@@ -11,7 +11,9 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::withCount('projects')->paginate(10);
+        $categories = Category::where('user_id', auth()->id())
+            ->withCount('projects')
+            ->paginate(10);
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -22,6 +24,9 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
+        // Add user_id to the request data
+        $request->merge(['user_id' => auth()->id()]);
+        
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|unique:categories',
         ]);
@@ -32,7 +37,7 @@ class CategoryController extends Controller
                 ->withInput();
         }
 
-        Category::create($request->all());
+        Category::create($request->only(['name', 'user_id']));
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category created successfully.');

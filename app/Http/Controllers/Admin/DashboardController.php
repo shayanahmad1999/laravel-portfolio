@@ -13,13 +13,13 @@ class DashboardController extends Controller
     public function index()
     {
         $stats = [
-            'projects' => Project::count(),
-            'skills' => Skill::count(),
-            'categories' => Category::count(),
+            'projects' => Project::where('user_id', auth()->id())->count(),
+            'skills' => Skill::where('user_id', auth()->id())->count(),
+            'categories' => Category::where('user_id', auth()->id())->count(),
         ];
         
-        $recentProjects = Project::latest()->take(5)->get();
-        $recentSkills = Skill::latest()->take(5)->get();
+        $recentProjects = Project::where('user_id', auth()->id())->latest()->take(5)->get();
+        $recentSkills = Skill::where('user_id', auth()->id())->latest()->take(5)->get();
         
         return view('admin.dashboard', compact('stats', 'recentProjects', 'recentSkills'));
     }

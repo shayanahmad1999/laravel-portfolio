@@ -10,7 +10,9 @@ use App\Models\{Project, Category, Skill};
 class AjaxController extends Controller
 {
     public function projects(Request $req) {
-        $q = Project::query()->with('category')->latest();
+        $q = Project::query()->with('category')
+            ->where('user_id', auth()->id())
+            ->latest();
 
         if ($req->filled('category')) {
             $q->whereHas('category', fn($w) => $w->where('name', $req->category));
@@ -36,7 +38,9 @@ class AjaxController extends Controller
     }
 
     public function skills() {
-        return response()->json(Skill::orderBy('level','desc')->get(['name','level']));
+        return response()->json(Skill::where('user_id', auth()->id())
+            ->orderBy('level','desc')
+            ->get(['name','level']));
     }
 
     public function contact(Request $r) {

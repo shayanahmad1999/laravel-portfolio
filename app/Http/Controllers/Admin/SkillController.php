@@ -11,7 +11,9 @@ class SkillController extends Controller
 {
     public function index()
     {
-        $skills = Skill::orderBy('level', 'desc')->paginate(10);
+        $skills = Skill::where('user_id', auth()->id())
+            ->orderBy('level', 'desc')
+            ->paginate(10);
         return view('admin.skills.index', compact('skills'));
     }
 
@@ -22,6 +24,9 @@ class SkillController extends Controller
 
     public function store(Request $request)
     {
+        // Add user_id to the request data
+        $request->merge(['user_id' => auth()->id()]);
+        
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'level' => 'required|integer|min:1|max:100',
@@ -33,7 +38,7 @@ class SkillController extends Controller
                 ->withInput();
         }
 
-        Skill::create($request->all());
+        Skill::create($request->only(['name', 'level', 'user_id']));
 
         return redirect()->route('admin.skills.index')
             ->with('success', 'Skill created successfully.');
