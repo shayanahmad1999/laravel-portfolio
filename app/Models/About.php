@@ -22,5 +22,11 @@ class About extends Model
         'years_experience',
         'completed_projects',
         'companies_worked',
+        'user_id',
     ];
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

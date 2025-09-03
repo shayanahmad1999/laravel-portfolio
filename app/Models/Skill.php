@@ -9,5 +9,10 @@ class Skill extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','level'];
+    protected $fillable = ['name', 'level', 'user_id'];
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

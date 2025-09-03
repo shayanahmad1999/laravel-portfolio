@@ -19,10 +19,21 @@ class Project extends Model
         'category_id',
         'excerpt',
         'body',
-        'tags'
+        'tags',
+        'user_id'
     ];
 
     protected $casts = ['tags' => 'array'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 
     protected static function booted()
     {
@@ -52,10 +63,5 @@ class Project extends Model
         }
 
         return $slug;
-    }
-
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
     }
 }

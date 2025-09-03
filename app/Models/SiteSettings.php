@@ -35,7 +35,20 @@ class SiteSettings extends Model
         'instagram_url',
         'linkedin_url',
         'github_url',
+        'user_id',
     ];
+
+    /**
+     * Get a setting value by key
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * Get a setting value by key
