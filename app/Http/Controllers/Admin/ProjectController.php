@@ -23,7 +23,7 @@ class ProjectController extends Controller
 
     public function create()
     {
-        $categories = Category::all();
+        $categories = Category::where('user_id', auth()->id())->get();
         return view('admin.projects.create', compact('categories'));
     }
 
