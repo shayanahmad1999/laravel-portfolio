@@ -13,11 +13,15 @@ class SiteSettings extends Model
     /**
      * The attributes that are mass assignable.
      *
+
      * @var array<int, string>
      */
     protected $fillable = [
         'site_title',
         'site_description',
+        'hero_tagline',
+        'hero_title',
+        'hero_description',
         'primary_color',
         'secondary_color',
         'accent_color',
@@ -38,7 +42,6 @@ class SiteSettings extends Model
         'github_url',
         'user_id',
     ];
-
     /**
      * Get a setting value by key
      *

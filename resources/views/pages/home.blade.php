@@ -8,17 +8,21 @@
                 <div class="inline-block px-4 py-1 bg-indigo-50 text-indigo-700 rounded-full mb-6 reveal-text">
                     <div class="flex items-center">
                         <div class="w-2 h-2 bg-indigo-600 rounded-full mr-2"></div>
-                        <span class="text-sm font-medium">Full Stack Developer</span>
+                        <span
+                            class="text-sm font-medium">{{ isset($settings->hero_tagline) ? $settings->hero_tagline : 'Full Stack Developer' }}</span>
                     </div>
                 </div>
                 <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight reveal-text">
-                    <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Hi, I'm
-                        {{ config('app.name') }}</span>
+                    <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        {{ isset($settings->hero_title) ? $settings->hero_title : 'Hi, I\'m ' . (config('app.name') ?? 'Developer') }}
+                    </span>
                 </h1>
-                <p class="text-xl text-gray-600 mb-8 leading-relaxed fade-in-scroll max-w-lg">I build beautiful, responsive web
-                    applications with modern technologies and creative solutions.</p>
+                <p class="text-xl text-gray-600 mb-8 leading-relaxed fade-in-scroll max-w-lg">
+                    {{ isset($settings->hero_description) ? $settings->hero_description : 'I build beautiful, responsive web applications with modern technologies and creative solutions.' }}
+                </p>
                 <div class="flex flex-wrap gap-4 fade-in-scroll" style="transition-delay: 0.3s;">
-                    <a href="{{ route('projects.page') }}" class="btn-primary flex items-center gap-2 btn-pulse px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium transition-all hover:shadow-lg">
+                    <a href="{{ route('projects.page') }}"
+                        class="btn-primary flex items-center gap-2 btn-pulse px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium transition-all hover:shadow-lg">
                         <span>View Projects</span>
                         <i class="fas fa-arrow-right"></i>
                     </a>
@@ -28,12 +32,15 @@
                         <span>Contact Me</span>
                     </a>
                 </div>
-                
+
                 <div class="mt-12 flex items-center gap-6 fade-in-scroll" style="transition-delay: 0.5s;">
                     <div class="flex -space-x-4">
-                        <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/men/32.jpg" alt="User">
-                        <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/women/31.jpg" alt="User">
-                        <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/men/33.jpg" alt="User">
+                        <img class="w-10 h-10 rounded-full border-2 border-white"
+                            src="https://randomuser.me/api/portraits/men/32.jpg" alt="User">
+                        <img class="w-10 h-10 rounded-full border-2 border-white"
+                            src="https://randomuser.me/api/portraits/women/31.jpg" alt="User">
+                        <img class="w-10 h-10 rounded-full border-2 border-white"
+                            src="https://randomuser.me/api/portraits/men/33.jpg" alt="User">
                     </div>
                     <div class="text-sm">
                         <span class="text-gray-800 font-medium">50+ clients</span>
@@ -56,14 +63,19 @@
                     <div class="absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-yellow-100 rounded-full floating opacity-70"
                         style="animation-delay: 1.5s;"></div>
                     <div class="relative z-10 bg-white rounded-2xl shadow-xl p-8 border border-gray-100 hover-scale">
-                        <div class="absolute top-4 right-4 bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-xs font-medium">Available for hire</div>
+                        <div
+                            class="absolute top-4 right-4 bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-xs font-medium">
+                            Available for hire</div>
                         <div class="img-hover-zoom">
                             <img src="/images/neat.png" alt="Portfolio" class="w-full h-auto rounded-lg mb-6">
                         </div>
                         <div class="flex justify-between items-center">
                             <div>
-                                <h3 class="font-bold text-lg animated-underline">Web Developer</h3>
-                                <p class="text-gray-500">Full Stack Developer</p>
+                                <h3 class="font-bold text-lg animated-underline">
+                                    {{ isset($settings->hero_title) ? $settings->hero_title : 'Web Developer' }}</h3>
+                                <p class="text-gray-500">
+                                    {{ isset($settings->hero_tagline) ? $settings->hero_tagline : 'Full Stack Developer' }}
+                                </p>
                             </div>
                             <div>
                                 <div
@@ -75,12 +87,15 @@
                         <div class="mt-6 pt-6 border-t border-gray-100">
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600">
+                                    <div
+                                        class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600">
                                         <i class="fas fa-check text-xs"></i>
                                     </div>
                                     <span class="text-sm font-medium">Available</span>
                                 </div>
-                                <a href="{{ route('contact.page') }}" class="text-indigo-600 text-sm font-medium hover:underline">Let's Talk <i class="fas fa-arrow-right ml-1"></i></a>
+                                <a href="{{ route('contact.page') }}"
+                                    class="text-indigo-600 text-sm font-medium hover:underline">Let's Talk <i
+                                        class="fas fa-arrow-right ml-1"></i></a>
                             </div>
                         </div>
                     </div>
@@ -90,10 +105,11 @@
     </section>
 
     <!-- Skills Section -->
-    <section class="py-20 bg-white rounded-3xl shadow-sm border border-gray-100 my-16 fade-in-scroll relative overflow-hidden">
+    <section
+        class="py-20 bg-white rounded-3xl shadow-sm border border-gray-100 my-16 fade-in-scroll relative overflow-hidden">
         <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full -mr-32 -mt-32 opacity-70"></div>
         <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-50 rounded-full -ml-32 -mb-32 opacity-70"></div>
-        
+
         <div class="relative z-10">
             <div class="text-center mb-16">
                 <div class="inline-block px-4 py-1 bg-indigo-50 text-indigo-700 rounded-full mb-4 reveal-text">
@@ -122,40 +138,48 @@
                         <span class="text-sm font-medium">About Me</span>
                     </div>
                 </div>
-                <h2 class="text-4xl font-bold mb-6 animated-gradient">{{ isset($about) && $about->title ? $about->title : 'Who I Am' }}</h2>
+                <h2 class="text-4xl font-bold mb-6 animated-gradient">
+                    {{ isset($about) && $about->title ? $about->title : 'Who I Am' }}</h2>
                 <div class="text-gray-600 mb-8 leading-relaxed">
-                    {!! isset($about) && $about->content ? $about->content : 'I am a passionate web developer with experience in creating modern, responsive web applications.' !!}
+                    {!! isset($about) && $about->content
+                        ? $about->content
+                        : 'I am a passionate web developer with experience in creating modern, responsive web applications.' !!}
                 </div>
-                
+
                 <div class="grid grid-cols-3 gap-6 mb-8">
                     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center hover-lift">
-                        <div class="text-3xl font-bold text-indigo-600 mb-2">{{ isset($about) && $about->years_experience ? $about->years_experience : '5+' }}</div>
+                        <div class="text-3xl font-bold text-indigo-600 mb-2">
+                            {{ isset($about) && $about->years_experience ? $about->years_experience : '5+' }}</div>
                         <div class="text-gray-600 text-sm">Years Experience</div>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center hover-lift">
-                        <div class="text-3xl font-bold text-indigo-600 mb-2">{{ isset($about) && $about->completed_projects ? $about->completed_projects : '100+' }}</div>
+                        <div class="text-3xl font-bold text-indigo-600 mb-2">
+                            {{ isset($about) && $about->completed_projects ? $about->completed_projects : '100+' }}</div>
                         <div class="text-gray-600 text-sm">Projects Done</div>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center hover-lift">
-                        <div class="text-3xl font-bold text-indigo-600 mb-2">{{ isset($about) && $about->companies_worked ? $about->companies_worked : '12+' }}</div>
+                        <div class="text-3xl font-bold text-indigo-600 mb-2">
+                            {{ isset($about) && $about->companies_worked ? $about->companies_worked : '12+' }}</div>
                         <div class="text-gray-600 text-sm">Companies</div>
                     </div>
                 </div>
-                
-                @if(isset($about) && $about->resume_link)
-                <a href="{{ $about->resume_link }}" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-50 text-indigo-700 rounded-xl hover:bg-indigo-100 transition-colors">
-                    <i class="fas fa-file-pdf"></i>
-                    <span>Download Resume</span>
-                </a>
+
+                @if (isset($about) && $about->resume_link)
+                    <a href="{{ $about->resume_link }}" target="_blank"
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-50 text-indigo-700 rounded-xl hover:bg-indigo-100 transition-colors">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Download Resume</span>
+                    </a>
                 @endif
             </div>
-            
+
             <div class="fade-in-scroll hidden md:block" style="transition-delay: 0.2s;">
                 <div class="relative">
                     <div class="absolute -top-10 -left-10 w-32 h-32 bg-indigo-100 rounded-full floating opacity-70"></div>
-                    <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-purple-100 rounded-full floating opacity-70" style="animation-delay: 1s;"></div>
+                    <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-purple-100 rounded-full floating opacity-70"
+                        style="animation-delay: 1s;"></div>
                     <div class="img-hover-zoom rounded-2xl overflow-hidden shadow-xl border border-gray-100">
-                        @if(isset($about) && $about->image)
+                        @if (isset($about) && $about->image)
                             <img src="{{ asset('storage/' . $about->image) }}" alt="About Me" class="w-full h-auto">
                         @else
                             <img src="/images/neat.png" alt="About Me" class="w-full h-auto">
@@ -165,7 +189,7 @@
             </div>
         </div>
     </section>
-    
+
     <!-- Services Section -->
     <section class="py-20 fade-in-scroll">
         <div class="text-center mb-16">
@@ -180,8 +204,11 @@
         </div>
 
         <div class="grid md:grid-cols-3 gap-8" data-stagger="container">
-            <div class="bg-white p-10 rounded-2xl shadow-sm border border-gray-100 card-hover-effect stagger-item relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-70 transition-opacity duration-500"></div>
+            <div
+                class="bg-white p-10 rounded-2xl shadow-sm border border-gray-100 card-hover-effect stagger-item relative overflow-hidden group">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-70 transition-opacity duration-500">
+                </div>
                 <div class="relative z-10">
                     <div
                         class="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 mb-8 floating shadow-md">
@@ -207,15 +234,19 @@
                 </div>
             </div>
 
-            <div class="bg-white p-10 rounded-2xl shadow-sm border border-gray-100 card-hover-effect stagger-item relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-70 transition-opacity duration-500"></div>
+            <div
+                class="bg-white p-10 rounded-2xl shadow-sm border border-gray-100 card-hover-effect stagger-item relative overflow-hidden group">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-70 transition-opacity duration-500">
+                </div>
                 <div class="relative z-10">
                     <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 mb-8 floating shadow-md"
                         style="animation-delay: 0.5s;">
                         <i class="fas fa-mobile-alt text-xl"></i>
                     </div>
                     <h3 class="text-2xl font-bold mb-4">Responsive Design</h3>
-                    <p class="text-gray-600 mb-6">Building interfaces that work beautifully on all devices, from mobile to desktop.
+                    <p class="text-gray-600 mb-6">Building interfaces that work beautifully on all devices, from mobile to
+                        desktop.
                     </p>
                     <ul class="space-y-2 text-gray-600">
                         <li class="flex items-center">
@@ -234,15 +265,19 @@
                 </div>
             </div>
 
-            <div class="bg-white p-10 rounded-2xl shadow-sm border border-gray-100 card-hover-effect stagger-item relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-70 transition-opacity duration-500"></div>
+            <div
+                class="bg-white p-10 rounded-2xl shadow-sm border border-gray-100 card-hover-effect stagger-item relative overflow-hidden group">
+                <div
+                    class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-70 transition-opacity duration-500">
+                </div>
                 <div class="relative z-10">
                     <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-8 floating shadow-md"
                         style="animation-delay: 1s;">
                         <i class="fas fa-server text-xl"></i>
                     </div>
                     <h3 class="text-2xl font-bold mb-4">Backend Development</h3>
-                    <p class="text-gray-600 mb-6">Creating robust server-side applications with Laravel and other modern frameworks.
+                    <p class="text-gray-600 mb-6">Creating robust server-side applications with Laravel and other modern
+                        frameworks.
                     </p>
                     <ul class="space-y-2 text-gray-600">
                         <li class="flex items-center">
@@ -264,19 +299,23 @@
     </section>
 
     <!-- Call to Action Section -->
-    <section class="py-20 my-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl text-white fade-in-scroll relative overflow-hidden">
+    <section
+        class="py-20 my-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl text-white fade-in-scroll relative overflow-hidden">
         <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -mr-48 -mt-48"></div>
         <div class="absolute bottom-0 left-0 w-96 h-96 bg-black/10 rounded-full -ml-48 -mb-48"></div>
-        
+
         <div class="relative z-10 max-w-4xl mx-auto text-center px-6">
             <h2 class="text-4xl font-bold mb-6 reveal-text">Ready to Start Your Project?</h2>
-            <p class="text-xl mb-10 opacity-90 max-w-2xl mx-auto reveal-text" style="animation-delay: 0.2s;">Let's collaborate to bring your ideas to life with modern web technologies and creative solutions.</p>
+            <p class="text-xl mb-10 opacity-90 max-w-2xl mx-auto reveal-text" style="animation-delay: 0.2s;">Let's
+                collaborate to bring your ideas to life with modern web technologies and creative solutions.</p>
             <div class="flex flex-wrap justify-center gap-6">
-                <a href="{{ route('projects.page') }}" class="px-8 py-4 bg-white text-indigo-600 font-medium rounded-xl hover:bg-opacity-90 transition-all hover-lift btn-pulse flex items-center gap-2">
+                <a href="{{ route('projects.page') }}"
+                    class="px-8 py-4 bg-white text-indigo-600 font-medium rounded-xl hover:bg-opacity-90 transition-all hover-lift btn-pulse flex items-center gap-2">
                     <i class="fas fa-eye"></i>
                     <span>View My Work</span>
                 </a>
-                <a href="{{ route('contact.page') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-medium rounded-xl hover:bg-white/10 transition-all hover-lift flex items-center gap-2">
+                <a href="{{ route('contact.page') }}"
+                    class="px-8 py-4 bg-transparent border-2 border-white text-white font-medium rounded-xl hover:bg-white/10 transition-all hover-lift flex items-center gap-2">
                     <i class="fas fa-paper-plane"></i>
                     <span>Contact Me</span>
                 </a>
@@ -338,7 +377,7 @@
                 }
             });
         }
-        
+
         // Helper function to get appropriate icon for each skill
         function getIconForSkill(skillName) {
             const skillIcons = {
@@ -366,7 +405,7 @@
                 'Photoshop': 'fa-image',
                 'Illustrator': 'fa-pen-nib'
             };
-            
+
             // Return the icon or a default one if not found
             return skillIcons[skillName] || 'fa-code';
         }

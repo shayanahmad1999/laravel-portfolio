@@ -27,6 +27,9 @@ class SiteSettingsController extends Controller
         $validator = Validator::make($request->all(), [
             'site_title' => 'required|string|max:255',
             'site_description' => 'nullable|string|max:255',
+            'hero_tagline' => 'nullable|string|max:255',
+            'hero_title' => 'nullable|string|max:255',
+            'hero_description' => 'nullable|string|max:500',
             'primary_color' => 'required|string|max:20',
             'secondary_color' => 'required|string|max:20',
             'accent_color' => 'required|string|max:20',

@@ -36,6 +36,30 @@
                 </div>
             </div>
             
+            <!-- Hero Section Content -->
+            <div>
+                <h3 class="text-lg font-medium text-gray-900 border-b pb-2 mb-4">Hero Section Content</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="hero_tagline" class="block text-sm font-medium text-gray-700 mb-1">Hero Tagline</label>
+                        <input type="text" name="hero_tagline" id="hero_tagline" value="{{ old('hero_tagline', $settings->hero_tagline ?? 'Full Stack Developer') }}"
+                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    </div>
+                    
+                    <div>
+                        <label for="hero_title" class="block text-sm font-medium text-gray-700 mb-1">Hero Title</label>
+                        <input type="text" name="hero_title" id="hero_title" value="{{ old('hero_title', $settings->hero_title ?? 'Hi, I\'m ' . (config('app.name') ?? 'Developer')) }}"
+                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <label for="hero_description" class="block text-sm font-medium text-gray-700 mb-1">Hero Description</label>
+                        <textarea name="hero_description" id="hero_description" rows="3"
+                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">{{ old('hero_description', $settings->hero_description ?? 'I build beautiful, responsive web applications with modern technologies and creative solutions.') }}</textarea>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Color Settings -->
             <div>
                 <h3 class="text-lg font-medium text-gray-900 border-b pb-2 mb-4">Color Settings</h3>
