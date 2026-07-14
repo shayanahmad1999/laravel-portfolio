@@ -3,19 +3,23 @@
 namespace App\Services;
 
 use App\Models\SiteSettings;
+use Illuminate\Support\Facades\Auth;
 
 class ThemeService
 {
     /**
-     * Generate dynamic CSS based on site settings
-     *
-     * @return string
+     * Generate dynamic CSS based on site settings.
      */
-    public static function generateCss()
+    public static function generateCss(?int $userId = null): string
     {
-        $settings = SiteSettings::first() ?? new SiteSettings();
+        $resolvedUserId = $userId ?: Auth::id();
+
+        $settings = $resolvedUserId
+            ? SiteSettings::where('user_id', $resolvedUserId)->first()
+            : SiteSettings::first();
+
+        $settings = $settings ?? new SiteSettings();
         
-        // Default values if settings are not set
         $primaryColor = $settings->primary_color ?? '#4F46E5';
         $secondaryColor = $settings->secondary_color ?? '#818CF8';
         $accentColor = $settings->accent_color ?? '#F59E0B';
@@ -27,7 +31,6 @@ class ThemeService
         $footerColor = $settings->footer_color ?? '#1F2937';
         $footerTextColor = $settings->footer_text_color ?? '#F9FAFB';
         
-        // Generate CSS
         $css = ":root {\n";
         $css .= "  --primary-color: {$primaryColor};\n";
         $css .= "  --secondary-color: {$secondaryColor};\n";
@@ -41,8 +44,6 @@ class ThemeService
         $css .= "  --footer-text-color: {$footerTextColor};\n";
         $css .= "}\n\n";
         
-        // Apply CSS variables to elements
-        $css .= "/* Apply theme colors */\n";
         $css .= "body { color: var(--text-color); }\n";
         $css .= ".bg-primary { background-color: var(--primary-color) !important; }\n";
         $css .= ".bg-secondary { background-color: var(--secondary-color) !important; }\n";
@@ -54,32 +55,26 @@ class ThemeService
         $css .= ".border-secondary { border-color: var(--secondary-color) !important; }\n";
         $css .= ".border-accent { border-color: var(--accent-color) !important; }\n\n";
         
-        // Buttons
-        $css .= "/* Buttons */\n";
         $css .= ".btn-primary {\n";
-        $css .= "  background-color: var(--button-color) !important;\n";
+        $css .= "  background: var(--button-color) !important;\n";
         $css .= "  color: white !important;\n";
         $css .= "}\n";
         $css .= ".btn-primary:hover {\n";
-        $css .= "  background-color: var(--button-hover-color) !important;\n";
+        $css .= "  background: var(--button-hover-color) !important;\n";
         $css .= "}\n\n";
         
-        // Navbar
-        $css .= "/* Navbar */\n";
         $css .= "header.site-header {\n";
         $css .= "  background-color: var(--navbar-color) !important;\n";
         $css .= "}\n";
-        $css .= "header.site-header .nav-link {\n";
+        $css .= "header.site-header a {\n";
         $css .= "  color: var(--navbar-text-color) !important;\n";
         $css .= "}\n\n";
         
-        // Footer
-        $css .= "/* Footer */\n";
         $css .= "footer {\n";
         $css .= "  background-color: var(--footer-color) !important;\n";
         $css .= "  color: var(--footer-text-color) !important;\n";
         $css .= "}\n";
-        $css .= "footer a {\n";
+        $css .= "footer, footer p, footer li, footer h3, footer i, footer a {\n";
         $css .= "  color: var(--footer-text-color) !important;\n";
         $css .= "}\n";
         

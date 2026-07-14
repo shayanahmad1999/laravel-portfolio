@@ -16,6 +16,7 @@
                 <div class="absolute -bottom-16 -right-16 w-32 h-32 bg-purple-50 rounded-full opacity-70"></div>
                 <div class="relative z-10">
                 <form id="contactForm" class="space-y-8">
+                    <input type="hidden" name="user_id" value="{{ $userId ?? '' }}">
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
                         <div class="relative">
@@ -273,3 +274,4 @@
         });
     </script>
 @endsection
+

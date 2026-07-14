@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContactMail;
+use App\Models\{Project, Skill};
+use App\Support\PortfolioContext;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ContactMail;
-use App\Models\{Project, Category, Skill};
-use Illuminate\Support\Facades\Auth;
 
 class AjaxController extends Controller
 {
     public function projects(Request $req)
     {
-        $userId = $this->resolveUserId($req);
+        $user = PortfolioContext::resolveUser($req);
+        $userId = $user?->id;
         
         $q = Project::query()->with('category')
             ->when($userId, fn($query) => $query->where('user_id', $userId))
@@ -24,6 +25,9 @@ class AjaxController extends Controller
         if ($req->filled('search')) {
             $q->where('title', 'like', '%' . $req->search . '%');
         }
+        if ($req->boolean('featured')) {
+            $q->where('is_featured', true);
+        }
 
         return response()->json(
             $q->paginate(9)->through(function ($p) {
@@ -31,8 +35,11 @@ class AjaxController extends Controller
                     'title' => $p->title,
                     'slug' => $p->slug,
                     'thumbnail' => $p->thumbnail,
+                    'project_files' => $p->project_files ?? [],
+                    'is_featured' => $p->is_featured,
                     'category' => optional($p->category)->name,
                     'excerpt' => $p->excerpt,
+                    'body' => $p->body,
                     'repo_url' => $p->repo_url,
                     'live_url' => $p->live_url,
                     'tags' => $p->tags,
@@ -43,46 +50,31 @@ class AjaxController extends Controller
 
     public function skills(Request $req)
     {
-        $userId = $this->resolveUserId($req);
+        $user = PortfolioContext::resolveUser($req);
+        $userId = $user?->id;
         
-        $query = Skill::query();
-        if ($userId) {
-            $query->where('user_id', $userId);
-        }
-        
-        return response()->json($query
+        return response()->json(Skill::query()
+            ->when($userId, fn($query) => $query->where('user_id', $userId))
             ->orderBy('level', 'desc')
-            ->get(['name', 'level']));
+            ->get(['name', 'logo', 'level']));
     }
 
-    public function contact(Request $r)
+    public function contact(Request $request)
     {
-        $data = $r->validate([
+        $data = $request->validate([
             'name' => 'required|string|max:120',
             'email' => 'required|email',
             'message' => 'required|string|max:4000',
+            'user_id' => 'nullable|integer|exists:users,id',
         ]);
-        Mail::to(config('mail.from.address'))->send(new ContactMail($data));
+
+        $user = PortfolioContext::resolveUser($request);
+        $settings = PortfolioContext::settings($user);
+        $recipient = $settings->contact_email ?: config('mail.from.address');
+
+        Mail::to($recipient)->send(new ContactMail($data));
+
         return response()->json(['ok' => true, 'msg' => 'Thanks, your message was sent.']);
     }
-    
-    /**
-     * Resolve which user's portfolio to show
-     */
-    private function resolveUserId($request)
-    {
-        // Check if a specific user is requested
-        if ($request->has('user_id')) {
-            return $request->get('user_id');
-        }
-        
-        // If user is authenticated, show their portfolio
-        if (Auth::check()) {
-            return Auth::id();
-        }
-        
-        // If no user is authenticated, check if there's a demo user
-        $demoUser = \App\Models\User::first();
-        return $demoUser ? $demoUser->id : null;
-    }
 }
+

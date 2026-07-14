@@ -324,6 +324,18 @@
     </section>
 
     <script>
+        const STORAGE_URL = "{{ asset('storage') }}";
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>'"]/g, character => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                "'": '&#039;',
+                '"': '&quot;'
+            }[character]));
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             // Fetch and render skills
             let skillsUrl = '{{ route('ajax.skills') }}';
@@ -336,14 +348,14 @@
 
             container.innerHTML = skills.map((skill, index) => `
     <div class="mb-8 stagger-item" style="transition-delay: ${index * 0.1}s;">
-      <div class="flex justify-between items-center mb-3">
-        <div class="flex items-center">
-          <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 mr-3">
-            <i class="fas ${getIconForSkill(skill.name)}"></i>
+      <div class="flex justify-between items-center mb-3 gap-4">
+        <div class="flex min-w-0 items-center">
+          <div class="w-10 h-10 rounded-lg bg-indigo-50 flex shrink-0 items-center justify-center text-indigo-600 mr-3 overflow-hidden border border-indigo-100">
+            ${skill.logo ? `<img src="${STORAGE_URL}/${skill.logo}" alt="${escapeHtml(skill.name)}" class="h-full w-full object-contain p-1">` : `<i class="fas ${getIconForSkill(skill.name)}"></i>`}
           </div>
-          <span class="font-medium text-lg">${skill.name}</span>
+          <span class="font-medium text-lg truncate">${escapeHtml(skill.name)}</span>
         </div>
-        <span class="text-sm font-medium px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full">${skill.level}%</span>
+        <span class="text-sm font-medium px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full shrink-0">${skill.level}%</span>
       </div>
       <div class="skill-bar h-3 bg-gray-100 rounded-full overflow-hidden">
         <div class="skill-progress h-full rounded-full bg-gradient-to-r from-indigo-600 to-purple-600" style="width: 0%" data-width="${skill.level}%"></div>
@@ -415,3 +427,4 @@
         }
     </script>
 @endsection
+

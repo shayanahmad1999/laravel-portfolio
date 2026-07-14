@@ -29,7 +29,7 @@ class MultiUserTestSeeder extends Seeder
 
         // Create data for User 1
         $this->createUserData($user1, 'User 1');
-        
+
         // Create data for User 2
         $this->createUserData($user2, 'User 2');
     }
@@ -40,12 +40,12 @@ class MultiUserTestSeeder extends Seeder
     private function createUserData(User $user, string $prefix): void
     {
         // Create categories for the user
-        $webCategory = Category::create([
+        $webCategory = Category::firstOrCreate([
             'name' => $prefix . ' Web Development',
             'user_id' => $user->id
         ]);
 
-        $mobileCategory = Category::create([
+        $mobileCategory = Category::firstOrCreate([
             'name' => $prefix . ' Mobile Development',
             'user_id' => $user->id
         ]);
