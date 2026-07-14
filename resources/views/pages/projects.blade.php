@@ -92,6 +92,21 @@
             return escapeHtml(value).replace(/\n/g, '<br>');
         }
 
+        function renderProjectGallery(images, compact = false) {
+            if (!Array.isArray(images) || images.length === 0) return '';
+
+            return `
+              <div class="${compact ? 'mb-6' : 'mt-8'}">
+                ${!compact ? `<h4 class="mb-4 font-semibold text-gray-800">Project Gallery</h4>` : ''}
+                <div class="grid ${compact ? 'grid-cols-3' : 'grid-cols-2 md:grid-cols-3'} gap-2">
+                  ${images.slice(0, compact ? 6 : images.length).map(image => `<a href="${STORAGE_URL}/${image.path}" target="_blank" class="block overflow-hidden rounded-lg border border-gray-100 bg-gray-50">
+                    <img src="${STORAGE_URL}/${image.path}" alt="${escapeHtml(image.name || 'Project screenshot')}" class="${compact ? 'h-20' : 'h-28 md:h-36'} w-full object-cover transition-transform hover:scale-105">
+                  </a>`).join('')}
+                </div>
+              </div>
+            `;
+        }
+
         function renderProjectFiles(files, compact = false) {
             if (!Array.isArray(files) || files.length === 0) return '';
 
@@ -144,6 +159,7 @@
                     ${project.tags ? `<div class="mt-6 flex flex-wrap gap-2">
                         ${Array.isArray(project.tags) ? project.tags.map(tag => `<span class="bg-indigo-50 text-indigo-600 text-xs px-3 py-1.5 rounded-full font-medium">${escapeHtml(tag)}</span>`).join('') : ''}
                     </div>` : ''}
+                    ${renderProjectGallery(project.gallery_images, false)}
                     ${renderProjectFiles(project.project_files, false)}
                     <div class="mt-8">${renderProjectActions(project, false)}</div>
                 </div>
@@ -210,6 +226,7 @@
           ${p.tags ? `<div class="flex flex-wrap gap-2 mb-6">
                             ${Array.isArray(p.tags) ? p.tags.map(tag => `<span class="bg-indigo-50 text-indigo-600 text-xs px-3 py-1.5 rounded-full hover-scale font-medium">${escapeHtml(tag)}</span>`).join('') : ''}
                           </div>` : ''}
+          ${renderProjectGallery(p.gallery_images, true)}
           ${renderProjectFiles(p.project_files, true)}
           ${renderProjectActions(p)}
         </div>

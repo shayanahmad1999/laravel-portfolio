@@ -163,6 +163,12 @@
                                 <i class="fab fa-facebook-f text-lg"></i>
                             </a>
                             @endif
+                            @if(isset($settings) && $settings->whatsapp_url)
+                            <a href="{{ $settings->whatsapp_url }}"
+                                class="bg-white/20 w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors hover-scale stagger-item shadow-lg">
+                                <i class="fab fa-whatsapp text-lg"></i>
+                            </a>
+                            @endif
                         </div>
                     </div>
                 </div>

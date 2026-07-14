@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ContactMail;
-use App\Models\{Project, Skill};
+use App\Models\{ContactMessage, Project, Skill};
 use App\Support\PortfolioContext;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -36,6 +36,7 @@ class AjaxController extends Controller
                     'slug' => $p->slug,
                     'thumbnail' => $p->thumbnail,
                     'project_files' => $p->project_files ?? [],
+                    'gallery_images' => $p->gallery_images ?? [],
                     'is_featured' => $p->is_featured,
                     'category' => optional($p->category)->name,
                     'excerpt' => $p->excerpt,
@@ -71,6 +72,13 @@ class AjaxController extends Controller
         $user = PortfolioContext::resolveUser($request);
         $settings = PortfolioContext::settings($user);
         $recipient = $settings->contact_email ?: config('mail.from.address');
+
+        ContactMessage::create([
+            'user_id' => $user?->id,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'message' => $data['message'],
+        ]);
 
         Mail::to($recipient)->send(new ContactMail($data));
 

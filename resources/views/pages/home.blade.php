@@ -1,6 +1,20 @@
 @extends('pages.layouts.app')
 
 @section('content')
+    @php
+        $publicParam = isset($portfolioOwner) && $portfolioOwner ? \App\Support\PortfolioContext::publicRouteParam($portfolioOwner) : null;
+        $projectsUrl = $publicParam ? route('portfolio.projects', $publicParam) : route('projects.page');
+        $contactUrl = $publicParam ? route('portfolio.contact', $publicParam) : route('contact.page');
+        $resumeUrl = isset($settings) && $settings->resume_file ? asset('storage/' . $settings->resume_file) : (isset($about) && $about->resume_link ? $about->resume_link : null);
+        $socialLinks = [
+            ['url' => $settings->github_url ?? null, 'icon' => 'fab fa-github', 'label' => 'GitHub'],
+            ['url' => $settings->linkedin_url ?? null, 'icon' => 'fab fa-linkedin-in', 'label' => 'LinkedIn'],
+            ['url' => $settings->twitter_url ?? null, 'icon' => 'fab fa-twitter', 'label' => 'Twitter'],
+            ['url' => $settings->instagram_url ?? null, 'icon' => 'fab fa-instagram', 'label' => 'Instagram'],
+            ['url' => $settings->facebook_url ?? null, 'icon' => 'fab fa-facebook-f', 'label' => 'Facebook'],
+            ['url' => $settings->whatsapp_url ?? null, 'icon' => 'fab fa-whatsapp', 'label' => 'WhatsApp'],
+        ];
+    @endphp
     <!-- Hero Section -->
     <section class="py-20 md:py-28">
         <div class="grid md:grid-cols-2 gap-16 items-center">
@@ -21,12 +35,12 @@
                     {{ isset($settings->hero_description) ? $settings->hero_description : 'I build beautiful, responsive web applications with modern technologies and creative solutions.' }}
                 </p>
                 <div class="flex flex-wrap gap-4 fade-in-scroll" style="transition-delay: 0.3s;">
-                    <a href="{{ route('projects.page') }}"
+                    <a href="{{ $projectsUrl }}"
                         class="btn-primary flex items-center gap-2 btn-pulse px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium transition-all hover:shadow-lg">
                         <span>View Projects</span>
                         <i class="fas fa-arrow-right"></i>
                     </a>
-                    <a href="{{ route('contact.page') }}"
+                    <a href="{{ $contactUrl }}"
                         class="px-8 py-4 rounded-xl border-2 border-indigo-600 text-indigo-600 font-medium hover:bg-indigo-50 transition-all duration-300 hover-lift flex items-center gap-2">
                         <i class="fas fa-envelope"></i>
                         <span>Contact Me</span>
@@ -93,7 +107,7 @@
                                     </div>
                                     <span class="text-sm font-medium">Available</span>
                                 </div>
-                                <a href="{{ route('contact.page') }}"
+                                <a href="{{ $contactUrl }}"
                                     class="text-indigo-600 text-sm font-medium hover:underline">Let's Talk <i
                                         class="fas fa-arrow-right ml-1"></i></a>
                             </div>
@@ -164,8 +178,8 @@
                     </div>
                 </div>
 
-                @if (isset($about) && $about->resume_link)
-                    <a href="{{ $about->resume_link }}" target="_blank"
+                @if ($resumeUrl)
+                    <a href="{{ $resumeUrl }}" target="_blank"
                         class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-50 text-indigo-700 rounded-xl hover:bg-indigo-100 transition-colors">
                         <i class="fas fa-file-pdf"></i>
                         <span>Download Resume</span>
@@ -298,6 +312,87 @@
         </div>
     </section>
 
+
+    @if(isset($timelineEntries) && $timelineEntries->count())
+        <section class="py-20 fade-in-scroll">
+            <div class="text-center mb-16">
+                <div class="inline-block px-4 py-1 bg-indigo-50 text-indigo-700 rounded-full mb-4 reveal-text">
+                    <span class="text-sm font-medium">Journey</span>
+                </div>
+                <h2 class="text-4xl font-bold mb-4 animated-gradient">Experience & Education</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">A quick view of my professional path, learning, and achievements.</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto space-y-6">
+                @foreach($timelineEntries as $entry)
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover-lift">
+                        <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                            <div>
+                                <span class="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 capitalize">{{ $entry->entry_type }}</span>
+                                <h3 class="mt-3 text-xl font-bold text-gray-900">{{ $entry->title }}</h3>
+                                @if($entry->organization)
+                                    <p class="text-gray-600">{{ $entry->organization }}</p>
+                                @endif
+                            </div>
+                            <div class="text-sm font-medium text-gray-500 md:text-right">
+                                {{ optional($entry->start_date)->format('M Y') ?: 'Anytime' }} - {{ $entry->is_current ? 'Present' : (optional($entry->end_date)->format('M Y') ?: 'Now') }}
+                            </div>
+                        </div>
+                        @if($entry->description)
+                            <p class="mt-4 leading-relaxed text-gray-600">{{ $entry->description }}</p>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
+    @if(isset($testimonials) && $testimonials->count())
+        <section class="py-20 fade-in-scroll">
+            <div class="text-center mb-16">
+                <div class="inline-block px-4 py-1 bg-indigo-50 text-indigo-700 rounded-full mb-4 reveal-text">
+                    <span class="text-sm font-medium">Testimonials</span>
+                </div>
+                <h2 class="text-4xl font-bold mb-4 animated-gradient">What People Say</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Feedback from people I have worked with.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                @foreach($testimonials as $testimonial)
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover-lift">
+                        <div class="mb-5 flex items-center gap-4">
+                            @if($testimonial->avatar)
+                                <img src="{{ asset('storage/' . $testimonial->avatar) }}" alt="{{ $testimonial->client_name }}" class="h-14 w-14 rounded-full object-cover">
+                            @else
+                                <div class="h-14 w-14 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600"><i class="fas fa-user"></i></div>
+                            @endif
+                            <div>
+                                <h3 class="font-bold text-gray-900">{{ $testimonial->client_name }}</h3>
+                                <p class="text-sm text-gray-500">{{ trim(($testimonial->client_role ?? '') . ($testimonial->client_company ? ' at ' . $testimonial->client_company : '')) }}</p>
+                            </div>
+                        </div>
+                        <div class="mb-4 text-yellow-500">@for($i = 0; $i < $testimonial->rating; $i++)<i class="fas fa-star"></i>@endfor</div>
+                        <p class="leading-relaxed text-gray-600">{{ $testimonial->message }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
+    @if(collect($socialLinks)->whereNotNull('url')->count())
+        <section class="py-12 fade-in-scroll">
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                @foreach($socialLinks as $social)
+                    @if($social['url'])
+                        <a href="{{ $social['url'] }}" target="_blank" class="flex h-12 w-12 items-center justify-center rounded-full bg-white text-indigo-600 shadow-sm border border-gray-100 hover:bg-indigo-50 hover-lift" aria-label="{{ $social['label'] }}">
+                            <i class="{{ $social['icon'] }}"></i>
+                        </a>
+                    @endif
+                @endforeach
+            </div>
+        </section>
+    @endif
+
     <!-- Call to Action Section -->
     <section
         class="py-20 my-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl text-white fade-in-scroll relative overflow-hidden">
@@ -309,12 +404,12 @@
             <p class="text-xl mb-10 opacity-90 max-w-2xl mx-auto reveal-text" style="animation-delay: 0.2s;">Let's
                 collaborate to bring your ideas to life with modern web technologies and creative solutions.</p>
             <div class="flex flex-wrap justify-center gap-6">
-                <a href="{{ route('projects.page') }}"
+                <a href="{{ $projectsUrl }}"
                     class="px-8 py-4 bg-white text-indigo-600 font-medium rounded-xl hover:bg-opacity-90 transition-all hover-lift btn-pulse flex items-center gap-2">
                     <i class="fas fa-eye"></i>
                     <span>View My Work</span>
                 </a>
-                <a href="{{ route('contact.page') }}"
+                <a href="{{ $contactUrl }}"
                     class="px-8 py-4 bg-transparent border-2 border-white text-white font-medium rounded-xl hover:bg-white/10 transition-all hover-lift flex items-center gap-2">
                     <i class="fas fa-paper-plane"></i>
                     <span>Contact Me</span>
@@ -427,4 +522,6 @@
         }
     </script>
 @endsection
+
+
 

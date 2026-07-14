@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\{Testimonial, TimelineEntry};
 use App\Support\PortfolioContext;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +21,8 @@ class PageController extends Controller
             'userId' => $user?->id,
             'portfolioOwner' => $request->routeIs('portfolio.*') ? $user : null,
             'isPublicView' => !Auth::check(),
+            'testimonials' => $this->testimonials($user?->id),
+            'timelineEntries' => $this->timelineEntries($user?->id),
         ]);
     }
 
@@ -48,6 +51,8 @@ class PageController extends Controller
             'userId' => $user->id,
             'portfolioOwner' => $user,
             'isPublicView' => true,
+            'testimonials' => $this->testimonials($user->id),
+            'timelineEntries' => $this->timelineEntries($user->id),
         ]);
     }
 
@@ -63,5 +68,26 @@ class PageController extends Controller
             'portfolioOwner' => $user,
             'isPublicView' => true,
         ]);
+    }
+    private function testimonials(?int $userId)
+    {
+        return Testimonial::query()
+            ->when($userId, fn($query) => $query->where('user_id', $userId))
+            ->where('is_visible', true)
+            ->orderBy('sort_order')
+            ->latest()
+            ->take(6)
+            ->get();
+    }
+
+    private function timelineEntries(?int $userId)
+    {
+        return TimelineEntry::query()
+            ->when($userId, fn($query) => $query->where('user_id', $userId))
+            ->where('is_visible', true)
+            ->orderBy('sort_order')
+            ->orderByDesc('start_date')
+            ->take(8)
+            ->get();
     }
 }
