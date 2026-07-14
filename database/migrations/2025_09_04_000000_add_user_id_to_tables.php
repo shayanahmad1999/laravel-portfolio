@@ -24,6 +24,7 @@ return new class extends Migration
         // Add user_id to categories table
         Schema::table('categories', function (Blueprint $table) {
             $table->foreignId('user_id')->after('id')->nullable()->constrained()->cascadeOnDelete();
+            $table->unique(['user_id', 'name'], 'categories_user_id_name_unique');
         });
 
         // Add user_id to abouts table
@@ -56,6 +57,7 @@ return new class extends Migration
 
         // Remove user_id from categories table
         Schema::table('categories', function (Blueprint $table) {
+            $table->dropUnique('categories_user_id_name_unique');
             $table->dropForeign(['user_id']);
             $table->dropColumn('user_id');
         });

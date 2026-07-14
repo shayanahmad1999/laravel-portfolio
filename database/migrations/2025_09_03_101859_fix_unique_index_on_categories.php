@@ -27,10 +27,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('categories', function (Blueprint $table) {
-            if (Schema::hasColumn('categories', 'categories_user_id_name_unique')) {
-                $table->dropUnique('categories_user_id_name_unique');
-            }
-            $table->unique('name', 'categories_name_unique');
+            // Do not recreate the old global unique index on name.
+            // The app supports the same category name for different users, so
+            // rebuilding categories_name_unique can fail when rollback data has
+            // duplicate names such as "Mobile Development".
         });
     }
 };
+
