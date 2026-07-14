@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Testimonial, TimelineEntry};
+use App\Models\{Service, Testimonial, TimelineEntry};
 use App\Support\PortfolioContext;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +23,7 @@ class PageController extends Controller
             'isPublicView' => !Auth::check(),
             'testimonials' => $this->testimonials($user?->id),
             'timelineEntries' => $this->timelineEntries($user?->id),
+            'services' => $this->services($user?->id),
         ]);
     }
 
@@ -53,6 +54,7 @@ class PageController extends Controller
             'isPublicView' => true,
             'testimonials' => $this->testimonials($user->id),
             'timelineEntries' => $this->timelineEntries($user->id),
+            'services' => $this->services($user->id),
         ]);
     }
 
@@ -69,6 +71,18 @@ class PageController extends Controller
             'isPublicView' => true,
         ]);
     }
+
+    private function services(?int $userId)
+    {
+        return Service::query()
+            ->when($userId, fn($query) => $query->where('user_id', $userId))
+            ->where('is_visible', true)
+            ->orderBy('sort_order')
+            ->latest()
+            ->take(6)
+            ->get();
+    }
+
     private function testimonials(?int $userId)
     {
         return Testimonial::query()

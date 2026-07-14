@@ -205,112 +205,56 @@
     </section>
 
     <!-- Services Section -->
-    <section class="py-20 fade-in-scroll">
-        <div class="text-center mb-16">
-            <div class="inline-block px-4 py-1 bg-indigo-50 text-indigo-700 rounded-full mb-4 reveal-text">
-                <div class="flex items-center">
-                    <div class="w-2 h-2 bg-indigo-600 rounded-full mr-2"></div>
-                    <span class="text-sm font-medium">My Services</span>
-                </div>
-            </div>
-            <h2 class="text-4xl font-bold mb-4 animated-gradient">What I Do</h2>
-            <p class="text-gray-600 max-w-2xl mx-auto">Services I offer to my clients</p>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-8" data-stagger="container">
-            <div
-                class="bg-white p-10 rounded-2xl shadow-sm border border-gray-100 card-hover-effect stagger-item relative overflow-hidden group">
-                <div
-                    class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-70 transition-opacity duration-500">
-                </div>
-                <div class="relative z-10">
-                    <div
-                        class="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 mb-8 floating shadow-md">
-                        <i class="fas fa-laptop-code text-xl"></i>
+    @if(isset($services) && $services->count())
+        <section class="py-20 fade-in-scroll">
+            <div class="text-center mb-16">
+                <div class="inline-block px-4 py-1 bg-indigo-50 text-indigo-700 rounded-full mb-4 reveal-text">
+                    <div class="flex items-center">
+                        <div class="w-2 h-2 bg-indigo-600 rounded-full mr-2"></div>
+                        <span class="text-sm font-medium">My Services</span>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4">Web Development</h3>
-                    <p class="text-gray-600 mb-6">Creating responsive, modern websites and web applications with the latest
-                        technologies.</p>
-                    <ul class="space-y-2 text-gray-600">
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>Custom Website Development</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>E-commerce Solutions</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>Web Application Development</span>
-                        </li>
-                    </ul>
                 </div>
+                <h2 class="text-4xl font-bold mb-4 animated-gradient">What I Do</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Services I offer to my clients</p>
             </div>
 
-            <div
-                class="bg-white p-10 rounded-2xl shadow-sm border border-gray-100 card-hover-effect stagger-item relative overflow-hidden group">
-                <div
-                    class="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-70 transition-opacity duration-500">
-                </div>
-                <div class="relative z-10">
-                    <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 mb-8 floating shadow-md"
-                        style="animation-delay: 0.5s;">
-                        <i class="fas fa-mobile-alt text-xl"></i>
+            <div class="grid md:grid-cols-3 gap-8" data-stagger="container">
+                @foreach($services as $service)
+                    @php
+                        $serviceColors = [
+                            'indigo' => ['soft' => 'bg-indigo-50', 'iconBg' => 'bg-indigo-100', 'text' => 'text-indigo-600'],
+                            'purple' => ['soft' => 'bg-purple-50', 'iconBg' => 'bg-purple-100', 'text' => 'text-purple-600'],
+                            'blue' => ['soft' => 'bg-blue-50', 'iconBg' => 'bg-blue-100', 'text' => 'text-blue-600'],
+                            'emerald' => ['soft' => 'bg-emerald-50', 'iconBg' => 'bg-emerald-100', 'text' => 'text-emerald-600'],
+                            'rose' => ['soft' => 'bg-rose-50', 'iconBg' => 'bg-rose-100', 'text' => 'text-rose-600'],
+                            'amber' => ['soft' => 'bg-amber-50', 'iconBg' => 'bg-amber-100', 'text' => 'text-amber-600'],
+                        ];
+                        $serviceColor = $serviceColors[$service->accent_color] ?? $serviceColors['indigo'];
+                    @endphp
+                    <div class="bg-white p-10 rounded-2xl shadow-sm border border-gray-100 card-hover-effect stagger-item relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-32 h-32 {{ $serviceColor['soft'] }} rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-70 transition-opacity duration-500"></div>
+                        <div class="relative z-10">
+                            <div class="w-16 h-16 {{ $serviceColor['iconBg'] }} rounded-2xl flex items-center justify-center {{ $serviceColor['text'] }} mb-8 floating shadow-md">
+                                <i class="{{ $service->icon }} text-xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-4">{{ $service->title }}</h3>
+                            <p class="text-gray-600 mb-6">{{ $service->description }}</p>
+                            @if(!empty($service->features))
+                                <ul class="space-y-2 text-gray-600">
+                                    @foreach($service->features as $feature)
+                                        <li class="flex items-center">
+                                            <i class="fas fa-check text-green-500 mr-2"></i>
+                                            <span>{{ $feature }}</span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </div>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4">Responsive Design</h3>
-                    <p class="text-gray-600 mb-6">Building interfaces that work beautifully on all devices, from mobile to
-                        desktop.
-                    </p>
-                    <ul class="space-y-2 text-gray-600">
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>Mobile-First Approach</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>Cross-Browser Compatibility</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>UI/UX Optimization</span>
-                        </li>
-                    </ul>
-                </div>
+                @endforeach
             </div>
-
-            <div
-                class="bg-white p-10 rounded-2xl shadow-sm border border-gray-100 card-hover-effect stagger-item relative overflow-hidden group">
-                <div
-                    class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-70 transition-opacity duration-500">
-                </div>
-                <div class="relative z-10">
-                    <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-8 floating shadow-md"
-                        style="animation-delay: 1s;">
-                        <i class="fas fa-server text-xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-4">Backend Development</h3>
-                    <p class="text-gray-600 mb-6">Creating robust server-side applications with Laravel and other modern
-                        frameworks.
-                    </p>
-                    <ul class="space-y-2 text-gray-600">
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>API Development</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>Database Design</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span>Authentication & Security</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
+    @endif
 
 
     @if(isset($timelineEntries) && $timelineEntries->count())

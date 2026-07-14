@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\{DashboardController, SkillController, ProjectController, CategoryController, AboutController, SiteSettingsController, TestimonialController, TimelineEntryController, ContactMessageController};
+use App\Http\Controllers\Admin\{DashboardController, SkillController, ProjectController, CategoryController, AboutController, SiteSettingsController, TestimonialController, TimelineEntryController, ContactMessageController, ServiceController};
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -17,6 +17,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // Categories management
     Route::resource('categories', CategoryController::class);
+
+    // Services management
+    Route::resource('services', ServiceController::class);
 
     // Testimonials management
     Route::resource('testimonials', TestimonialController::class);

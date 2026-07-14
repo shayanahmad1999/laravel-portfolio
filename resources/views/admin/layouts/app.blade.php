@@ -92,6 +92,11 @@
                         <span>Categories</span>
                     </a>
 
+                    <a href="{{ route('admin.services.index') }}" class="nav-link flex items-center px-4 py-2 rounded-md {{ request()->routeIs('admin.services*') ? 'active' : '' }}">
+                        <i class="fas fa-briefcase mr-3"></i>
+                        <span>Services</span>
+                    </a>
+
                     <a href="{{ route('admin.testimonials.index') }}" class="nav-link flex items-center px-4 py-2 rounded-md {{ request()->routeIs('admin.testimonials*') ? 'active' : '' }}">
                         <i class="fas fa-quote-left mr-3"></i>
                         <span>Testimonials</span>
