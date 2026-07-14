@@ -16,6 +16,7 @@ class Project extends Model
         'slug',
         'thumbnail',
         'project_files',
+        'gallery_images',
         'is_featured',
         'repo_url',
         'live_url',
@@ -29,6 +30,7 @@ class Project extends Model
     protected $casts = [
         'tags' => 'array',
         'project_files' => 'array',
+        'gallery_images' => 'array',
         'is_featured' => 'boolean',
     ];
 

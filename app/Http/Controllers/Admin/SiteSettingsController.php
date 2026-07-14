@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\SiteSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class SiteSettingsController extends Controller
@@ -48,6 +49,9 @@ class SiteSettingsController extends Controller
             'instagram_url' => 'nullable|url|max:255',
             'linkedin_url' => 'nullable|url|max:255',
             'github_url' => 'nullable|url|max:255',
+            'whatsapp_url' => 'nullable|url|max:255',
+            'resume_file' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
+            'remove_resume_file' => 'nullable|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -59,6 +63,24 @@ class SiteSettingsController extends Controller
         $settings = SiteSettings::byUserId()->first();
         $data = $validator->validated();
         $data['user_id'] = Auth::id();
+        unset($data['remove_resume_file']);
+
+        if ($request->boolean('remove_resume_file') && $settings?->resume_file) {
+            Storage::disk('public')->delete($settings->resume_file);
+            $data['resume_file'] = null;
+        } else {
+            unset($data['resume_file']);
+        }
+
+        if ($request->hasFile('resume_file')) {
+            if ($settings?->resume_file) {
+                Storage::disk('public')->delete($settings->resume_file);
+            }
+
+            $file = $request->file('resume_file');
+            $fileName = time() . '_resume.' . $file->getClientOriginalExtension();
+            $data['resume_file'] = $file->storeAs('resumes', $fileName, 'public');
+        }
 
         if ($settings) {
             $settings->update($data);
@@ -70,4 +92,6 @@ class SiteSettingsController extends Controller
             ->with('success', 'Site settings updated successfully.');
     }
 }
+
+
 

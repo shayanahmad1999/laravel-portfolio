@@ -38,6 +38,8 @@ class ProjectController extends Controller
             'image'           => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'project_files'   => 'nullable|array',
             'project_files.*' => 'file|mimes:jpeg,png,jpg,gif,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,zip|max:10240',
+            'gallery_images' => 'nullable|array',
+            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:4096',
             'category_id'     => 'required|exists:categories,id',
             'tags'            => 'nullable',
             'repo_url'        => 'nullable|url',
@@ -63,6 +65,7 @@ class ProjectController extends Controller
         }
 
         $data['project_files'] = $this->storeProjectFiles($request);
+        $data['gallery_images'] = $this->storeGalleryImages($request);
         $data['tags'] = $this->normalizeTags($data['tags'] ?? null);
 
         Project::create($data);
@@ -85,8 +88,12 @@ class ProjectController extends Controller
             'image'                  => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'project_files'          => 'nullable|array',
             'project_files.*'        => 'file|mimes:jpeg,png,jpg,gif,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,zip|max:10240',
+            'gallery_images'         => 'nullable|array',
+            'gallery_images.*'       => 'image|mimes:jpeg,png,jpg,gif,webp|max:4096',
             'remove_project_files'   => 'nullable|array',
             'remove_project_files.*' => 'integer',
+            'remove_gallery_images'  => 'nullable|array',
+            'remove_gallery_images.*'=> 'integer',
             'category_id'            => 'required|exists:categories,id',
             'tags'                   => 'nullable',
             'repo_url'               => 'nullable|url',
@@ -121,6 +128,11 @@ class ProjectController extends Controller
         );
 
         $data['project_files'] = array_values(array_merge($existingFiles, $this->storeProjectFiles($request)));
+        $existingGallery = $this->removeSelectedStoredItems(
+            $project->gallery_images ?? [],
+            $request->input('remove_gallery_images', [])
+        );
+        $data['gallery_images'] = array_values(array_merge($existingGallery, $this->storeGalleryImages($request)));
         $data['tags'] = $this->normalizeTags($data['tags'] ?? $project->tags);
 
         $project->update($data);
@@ -138,6 +150,12 @@ class ProjectController extends Controller
         foreach ($project->project_files ?? [] as $file) {
             if (!empty($file['path'])) {
                 Storage::disk('public')->delete($file['path']);
+            }
+        }
+
+        foreach ($project->gallery_images ?? [] as $image) {
+            if (!empty($image['path'])) {
+                Storage::disk('public')->delete($image['path']);
             }
         }
 
@@ -171,6 +189,34 @@ class ProjectController extends Controller
     }
 
     private function removeSelectedProjectFiles(array $files, array $indexesToRemove): array
+    {
+        return $this->removeSelectedStoredItems($files, $indexesToRemove);
+    }
+
+    private function storeGalleryImages(Request $request): array
+    {
+        if (!$request->hasFile('gallery_images')) {
+            return [];
+        }
+
+        $storedImages = [];
+
+        foreach ($request->file('gallery_images') as $image) {
+            $fileName = uniqid() . '_' . Str::slug(pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $image->getClientOriginalExtension();
+            $path = $image->storeAs('projects/gallery', $fileName, 'public');
+
+            $storedImages[] = [
+                'name' => $image->getClientOriginalName(),
+                'path' => $path,
+                'mime' => $image->getClientMimeType(),
+                'size' => $image->getSize(),
+            ];
+        }
+
+        return $storedImages;
+    }
+
+    private function removeSelectedStoredItems(array $files, array $indexesToRemove): array
     {
         $indexesToRemove = array_map('intval', $indexesToRemove);
 

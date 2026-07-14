@@ -40,6 +40,8 @@ class SiteSettings extends Model
         'instagram_url',
         'linkedin_url',
         'github_url',
+        'whatsapp_url',
+        'resume_file',
         'user_id',
     ];
     /**

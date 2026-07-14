@@ -91,6 +91,21 @@
                         <i class="fas fa-tags mr-3"></i>
                         <span>Categories</span>
                     </a>
+
+                    <a href="{{ route('admin.testimonials.index') }}" class="nav-link flex items-center px-4 py-2 rounded-md {{ request()->routeIs('admin.testimonials*') ? 'active' : '' }}">
+                        <i class="fas fa-quote-left mr-3"></i>
+                        <span>Testimonials</span>
+                    </a>
+
+                    <a href="{{ route('admin.timeline.index') }}" class="nav-link flex items-center px-4 py-2 rounded-md {{ request()->routeIs('admin.timeline*') ? 'active' : '' }}">
+                        <i class="fas fa-stream mr-3"></i>
+                        <span>Timeline</span>
+                    </a>
+
+                    <a href="{{ route('admin.messages.index') }}" class="nav-link flex items-center px-4 py-2 rounded-md {{ request()->routeIs('admin.messages*') ? 'active' : '' }}">
+                        <i class="fas fa-inbox mr-3"></i>
+                        <span>Messages</span>
+                    </a>
                     
                     <a href="{{ route('admin.about.index') }}" class="nav-link flex items-center px-4 py-2 rounded-md {{ request()->routeIs('admin.about*') ? 'active' : '' }}">
                         <i class="fas fa-user mr-3"></i>

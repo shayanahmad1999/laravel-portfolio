@@ -77,6 +77,16 @@
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
+
+                        <div class="mb-6">
+                            <label for="gallery_images" class="block text-sm font-medium text-gray-700 mb-1">Project Gallery Images</label>
+                            <input type="file" name="gallery_images[]" id="gallery_images" multiple
+                                class="w-full border border-gray-300 rounded-md p-2" accept="image/*">
+                            <p class="mt-1 text-sm text-gray-500">Optional screenshots for the public project details modal.</p>
+                            @error('gallery_images.*')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
 
                     <div class="col-span-1">

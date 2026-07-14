@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="bg-white rounded-lg shadow-md p-6">
-    <form action="{{ route('admin.settings.update') }}" method="POST">
+    <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
         @csrf
         
         @if ($errors->any())
@@ -227,6 +227,23 @@
                         <input type="text" name="contact_address" id="contact_address" value="{{ old('contact_address', $settings->contact_address ?? '') }}" 
                             class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     </div>
+
+                    <div class="md:col-span-2">
+                        <label for="resume_file" class="block text-sm font-medium text-gray-700 mb-1">Resume / CV File</label>
+                        @if(!empty($settings->resume_file))
+                            <div class="mb-2 flex items-center justify-between rounded-md border border-gray-200 bg-gray-50 p-3">
+                                <a href="{{ asset('storage/' . $settings->resume_file) }}" target="_blank" class="text-sm text-indigo-600 hover:text-indigo-800">
+                                    <i class="fas fa-file-download mr-1"></i> Current resume
+                                </a>
+                                <label class="flex items-center gap-2 text-sm text-red-600">
+                                    <input type="checkbox" name="remove_resume_file" value="1" class="rounded border-gray-300 text-red-600">
+                                    Remove
+                                </label>
+                            </div>
+                        @endif
+                        <input type="file" name="resume_file" id="resume_file" accept=".pdf,.doc,.docx" class="w-full border border-gray-300 rounded-md p-2">
+                        <p class="mt-1 text-sm text-gray-500">Upload PDF, DOC, or DOCX up to 5MB.</p>
+                    </div>
                 </div>
             </div>
             
@@ -272,6 +289,14 @@
                         </label>
                         <input type="url" name="instagram_url" id="instagram_url" value="{{ old('instagram_url', $settings->instagram_url ?? '') }}" 
                             class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    </div>
+
+                    <div>
+                        <label for="whatsapp_url" class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fab fa-whatsapp mr-1"></i> WhatsApp URL
+                        </label>
+                        <input type="url" name="whatsapp_url" id="whatsapp_url" value="{{ old('whatsapp_url', $settings->whatsapp_url ?? '') }}" 
+                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="https://wa.me/1234567890">
                     </div>
                 </div>
             </div>

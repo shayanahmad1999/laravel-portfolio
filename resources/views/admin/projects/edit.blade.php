@@ -111,6 +111,29 @@
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
+
+                        <div class="mb-6">
+                            <label for="gallery_images" class="block text-sm font-medium text-gray-700 mb-1">Project Gallery Images</label>
+                            @if (!empty($project->gallery_images))
+                                <div class="mb-3 grid grid-cols-2 gap-3">
+                                    @foreach ($project->gallery_images as $index => $image)
+                                        <label class="rounded-md border border-gray-200 p-2">
+                                            <img src="{{ asset('storage/' . $image['path']) }}" alt="{{ $image['name'] ?? 'Gallery image' }}" class="mb-2 h-24 w-full rounded object-cover">
+                                            <span class="flex items-center justify-between gap-2 text-sm text-red-600">
+                                                <span>Remove</span>
+                                                <input type="checkbox" name="remove_gallery_images[]" value="{{ $index }}" class="rounded border-gray-300 text-red-600 focus:ring-red-500">
+                                            </span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            @endif
+                            <input type="file" name="gallery_images[]" id="gallery_images" multiple
+                                class="w-full border border-gray-300 rounded-md p-2" accept="image/*">
+                            <p class="mt-1 text-sm text-gray-500">New screenshots will be added to the existing gallery.</p>
+                            @error('gallery_images.*')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
 
                     <div class="col-span-1">
