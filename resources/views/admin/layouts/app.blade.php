@@ -52,6 +52,12 @@
     </style>
 </head>
 <body class="font-sans antialiased bg-gray-100">
+    @php
+        $adminUser = Auth::user();
+        $adminSiteUrl = $adminUser && $adminUser->portfolio_slug
+            ? route('portfolio.public', \App\Support\PortfolioContext::publicRouteParam($adminUser))
+            : route('home');
+    @endphp
     <div class="min-h-screen flex">
         <!-- Sidebar -->
         <aside class="sidebar fixed inset-y-0 left-0 z-50 w-64 bg-indigo-800 text-white shadow-lg md:relative md:translate-x-0">
@@ -97,7 +103,7 @@
                     </a>
                     
                     <div class="pt-4 mt-4 border-t border-indigo-700">
-                        <a href="{{ route('home') }}" class="nav-link flex items-center px-4 py-2 rounded-md" target="_blank">
+                        <a href="{{ $adminSiteUrl }}" class="nav-link flex items-center px-4 py-2 rounded-md" target="_blank">
                             <i class="fas fa-external-link-alt mr-3"></i>
                             <span>View Site</span>
                         </a>
@@ -174,3 +180,4 @@
     </script>
 </body>
 </html>
+

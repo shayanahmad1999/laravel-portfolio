@@ -57,15 +57,42 @@
 
                         <div class="mb-6">
                             <label for="image" class="block text-sm font-medium text-gray-700 mb-1">Project Image</label>
-                            <input type="file" name="image" id="image"
+                            <input type="file" name="image" id="image" required
                                 class="w-full border border-gray-300 rounded-md p-2" accept="image/*">
                             @error('image')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="mb-6">
+                            <label for="project_files" class="block text-sm font-medium text-gray-700 mb-1">Project Files</label>
+                            <input type="file" name="project_files[]" id="project_files" multiple
+                                class="w-full border border-gray-300 rounded-md p-2"
+                                accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip">
+                            <p class="mt-1 text-sm text-gray-500">Upload screenshots, PDFs, documents, spreadsheets, presentations, text files, or ZIP files.</p>
+                            @error('project_files')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                            @error('project_files.*')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
 
                     <div class="col-span-1">
+                        <div class="mb-6 rounded-md border border-indigo-100 bg-indigo-50 p-4">
+                            <label class="flex items-start gap-3">
+                                <input type="checkbox" name="is_featured" value="1" class="mt-1 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" {{ old('is_featured') ? 'checked' : '' }}>
+                                <span>
+                                    <span class="block text-sm font-medium text-gray-800">Feature this project</span>
+                                    <span class="block text-sm text-gray-600">Featured projects are highlighted and can be filtered on the public projects page.</span>
+                                </span>
+                            </label>
+                            @error('is_featured')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <div class="mb-6">
                             <label for="body" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
                             <textarea name="body" id="body" rows="4"
@@ -87,11 +114,11 @@
                         </div>
 
                         <div class="mb-6">
-                            <label for="github_url" class="block text-sm font-medium text-gray-700 mb-1">GitHub URL</label>
-                            <input type="url" name="github_url" id="github_url" value="{{ old('github_url') }}"
+                            <label for="repo_url" class="block text-sm font-medium text-gray-700 mb-1">GitHub URL</label>
+                            <input type="url" name="repo_url" id="repo_url" value="{{ old('repo_url') }}"
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                 placeholder="https://github.com/">
-                            @error('github_url')
+                            @error('repo_url')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
@@ -108,3 +135,4 @@
         </div>
     </div>
 @endsection
+

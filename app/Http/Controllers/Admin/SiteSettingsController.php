@@ -57,7 +57,7 @@ class SiteSettingsController extends Controller
         }
 
         $settings = SiteSettings::byUserId()->first();
-        $data = $request->all();
+        $data = $validator->validated();
         $data['user_id'] = Auth::id();
 
         if ($settings) {
@@ -70,3 +70,4 @@ class SiteSettingsController extends Controller
             ->with('success', 'Site settings updated successfully.');
     }
 }
+

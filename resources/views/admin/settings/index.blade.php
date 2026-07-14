@@ -17,6 +17,26 @@
             </div>
         @endif
 
+        @php
+            $settingsOwner = auth()->user();
+            $previewTitle = \App\Support\PortfolioContext::isCustomSiteTitle($settings ?? null)
+                ? $settings->site_title
+                : $settingsOwner->name . "'s Portfolio";
+            $previewUrl = $settingsOwner->portfolio_slug
+                ? route('portfolio.public', \App\Support\PortfolioContext::publicRouteParam($settingsOwner))
+                : route('home');
+        @endphp
+
+        <div class="mb-8 flex flex-col gap-4 rounded-lg border border-indigo-100 bg-indigo-50 p-4 md:flex-row md:items-center md:justify-between">
+            <div>
+                <p class="text-sm font-medium text-indigo-900">Frontend Preview</p>
+                <p class="mt-1 text-sm text-indigo-700">Navbar brand: <span class="font-semibold">{{ $previewTitle }}</span></p>
+            </div>
+            <a href="{{ $previewUrl }}" target="_blank" class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
+                <i class="fas fa-external-link-alt mr-2"></i> View Site
+            </a>
+        </div>
+
         <div class="space-y-8">
             <!-- General Settings -->
             <div>
@@ -289,3 +309,4 @@
     });
 </script>
 @endsection
+

@@ -13,7 +13,7 @@
     <div class="p-6">
         <h2 class="text-lg font-medium text-gray-900 mb-6">Edit Skill: {{ $skill->name }}</h2>
         
-        <form action="{{ route('admin.skills.update', $skill) }}" method="POST">
+        <form action="{{ route('admin.skills.update', $skill) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             
@@ -21,6 +21,24 @@
                 <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Skill Name</label>
                 <input type="text" name="name" id="name" value="{{ old('name', $skill->name) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
                 @error('name')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+            
+            <div class="mb-6">
+                <label for="logo" class="block text-sm font-medium text-gray-700 mb-1">Skill Logo</label>
+                @if ($skill->logo)
+                    <div class="mb-3 flex items-center gap-3 rounded-md border border-gray-200 p-3">
+                        <img src="{{ asset('storage/' . $skill->logo) }}" alt="{{ $skill->name }}" class="h-12 w-12 rounded object-contain bg-gray-50">
+                        <label class="flex items-center gap-2 text-sm text-red-600">
+                            <input type="checkbox" name="remove_logo" value="1" class="rounded border-gray-300 text-red-600 focus:ring-red-500">
+                            Remove current logo
+                        </label>
+                    </div>
+                @endif
+                <input type="file" name="logo" id="logo" class="w-full border border-gray-300 rounded-md p-2" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp">
+                <p class="mt-1 text-sm text-gray-500">Leave empty to keep the current logo. Upload JPG, PNG, GIF, or WebP up to 2MB.</p>
+                @error('logo')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
@@ -57,3 +75,4 @@
     });
 </script>
 @endsection
+

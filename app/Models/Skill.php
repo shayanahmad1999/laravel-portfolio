@@ -10,10 +10,11 @@ class Skill extends Model
 {
     use HasFactory, UserScope;
 
-    protected $fillable = ['name', 'level', 'user_id'];
+    protected $fillable = ['name', 'logo', 'level', 'user_id'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 }
+

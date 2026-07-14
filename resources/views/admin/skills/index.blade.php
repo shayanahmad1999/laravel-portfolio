@@ -15,6 +15,7 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Logo</th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level</th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
@@ -24,6 +25,15 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse($skills as $skill)
                     <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            @if ($skill->logo)
+                                <img src="{{ asset('storage/' . $skill->logo) }}" alt="{{ $skill->name }}" class="h-10 w-10 rounded object-contain bg-gray-50 border border-gray-200">
+                            @else
+                                <div class="h-10 w-10 rounded bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                            @endif
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ $skill->name }}</div>
                         </td>
@@ -52,7 +62,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">
+                        <td colspan="5" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">
                             No skills found. <a href="{{ route('admin.skills.create') }}" class="text-indigo-600 hover:text-indigo-900">Add your first skill</a>.
                         </td>
                     </tr>

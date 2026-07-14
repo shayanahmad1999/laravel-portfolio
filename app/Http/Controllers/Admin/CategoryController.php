@@ -58,8 +58,15 @@ class CategoryController extends Controller
 
     public function update(Request $request, Category $category)
     {
+        $userId = $category->user_id ?? Auth::id();
+
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories')->where(fn($q) => $q->where('user_id', $userId))->ignore($category->id),
+            ],
         ]);
 
         if ($validator->fails()) {

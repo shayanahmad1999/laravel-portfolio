@@ -15,6 +15,8 @@ class Project extends Model
         'title',
         'slug',
         'thumbnail',
+        'project_files',
+        'is_featured',
         'repo_url',
         'live_url',
         'category_id',
@@ -24,7 +26,11 @@ class Project extends Model
         'user_id'
     ];
 
-    protected $casts = ['tags' => 'array'];
+    protected $casts = [
+        'tags' => 'array',
+        'project_files' => 'array',
+        'is_featured' => 'boolean',
+    ];
 
     public function user()
     {
@@ -66,3 +72,4 @@ class Project extends Model
         return $slug;
     }
 }
+

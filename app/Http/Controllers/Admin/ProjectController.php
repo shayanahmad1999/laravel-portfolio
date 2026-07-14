@@ -30,17 +30,19 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        // Add user_id to the request data
         $request->merge(['user_id' => Auth::id()]);
 
         $validator = Validator::make($request->all(), [
-            'title'        => 'required|string|max:255',
-            'body'         => 'required|string',
-            'image'        => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'category_id'  => 'required|exists:categories,id',
-            'tags'         => 'nullable', // can be string "a,b" or array ["a","b"]
-            'github'       => 'nullable|url',
-            'demo'         => 'nullable|url',
+            'title'           => 'required|string|max:255',
+            'body'            => 'required|string',
+            'image'           => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'project_files'   => 'nullable|array',
+            'project_files.*' => 'file|mimes:jpeg,png,jpg,gif,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,zip|max:10240',
+            'category_id'     => 'required|exists:categories,id',
+            'tags'            => 'nullable',
+            'repo_url'        => 'nullable|url',
+            'live_url'        => 'nullable|url',
+            'is_featured'     => 'nullable|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -49,10 +51,10 @@ class ProjectController extends Controller
                 ->withInput();
         }
 
-        // Build data safely (whitelist fields)
-        $data = $request->only(['title', 'body', 'category_id', 'tags', 'github', 'demo', 'user_id']);
+        $data = $request->only(['title', 'body', 'category_id', 'tags', 'repo_url', 'live_url', 'user_id']);
+        $data['is_featured'] = $request->boolean('is_featured');
+        $data['excerpt'] = Str::limit(strip_tags($request->body), 160);
 
-        // Image upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
@@ -60,10 +62,10 @@ class ProjectController extends Controller
             $data['thumbnail'] = 'projects/' . $imageName;
         }
 
-        // Normalize tags to an ARRAY
+        $data['project_files'] = $this->storeProjectFiles($request);
         $data['tags'] = $this->normalizeTags($data['tags'] ?? null);
 
-        Project::create($data); // slug is auto-generated in the model
+        Project::create($data);
 
         return redirect()->route('admin.projects.index')
             ->with('success', 'Project created successfully.');
@@ -71,20 +73,25 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
-        $categories = Category::all();
+        $categories = Category::byUserId()->get();
         return view('admin.projects.edit', compact('project', 'categories'));
     }
 
     public function update(Request $request, Project $project)
     {
         $validator = Validator::make($request->all(), [
-            'title'        => 'required|string|max:255',
-            'body'         => 'required|string',
-            'image'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'category_id'  => 'required|exists:categories,id',
-            'tags'         => 'nullable', // can be string or array
-            'github'       => 'nullable|url',
-            'demo'         => 'nullable|url',
+            'title'                  => 'required|string|max:255',
+            'body'                   => 'required|string',
+            'image'                  => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'project_files'          => 'nullable|array',
+            'project_files.*'        => 'file|mimes:jpeg,png,jpg,gif,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,zip|max:10240',
+            'remove_project_files'   => 'nullable|array',
+            'remove_project_files.*' => 'integer',
+            'category_id'            => 'required|exists:categories,id',
+            'tags'                   => 'nullable',
+            'repo_url'               => 'nullable|url',
+            'live_url'               => 'nullable|url',
+            'is_featured'            => 'nullable|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -93,9 +100,10 @@ class ProjectController extends Controller
                 ->withInput();
         }
 
-        $data = $request->only(['title', 'body', 'category_id', 'tags', 'github', 'demo']);
+        $data = $request->only(['title', 'body', 'category_id', 'tags', 'repo_url', 'live_url']);
+        $data['is_featured'] = $request->boolean('is_featured');
+        $data['excerpt'] = Str::limit(strip_tags($request->body), 160);
 
-        // Image upload (replace old)
         if ($request->hasFile('image')) {
             if ($project->thumbnail) {
                 Storage::disk('public')->delete($project->thumbnail);
@@ -107,10 +115,14 @@ class ProjectController extends Controller
             $data['thumbnail'] = 'projects/' . $imageName;
         }
 
-        // Normalize tags to an ARRAY
+        $existingFiles = $this->removeSelectedProjectFiles(
+            $project->project_files ?? [],
+            $request->input('remove_project_files', [])
+        );
+
+        $data['project_files'] = array_values(array_merge($existingFiles, $this->storeProjectFiles($request)));
         $data['tags'] = $this->normalizeTags($data['tags'] ?? $project->tags);
 
-        // Keep existing slug unless you want to reset it when title changes.
         $project->update($data);
 
         return redirect()->route('admin.projects.index')
@@ -119,9 +131,14 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
-        // Delete project image
         if ($project->thumbnail) {
             Storage::disk('public')->delete($project->thumbnail);
+        }
+
+        foreach ($project->project_files ?? [] as $file) {
+            if (!empty($file['path'])) {
+                Storage::disk('public')->delete($file['path']);
+            }
         }
 
         $project->delete();
@@ -130,13 +147,43 @@ class ProjectController extends Controller
             ->with('success', 'Project deleted successfully.');
     }
 
-    /**
-     * Accepts:
-     * - null                -> []
-     * - "a,b,c"             -> ["a","b","c"]
-     * - ["a", "b", "c"]     -> ["a","b","c"]
-     * - trims, removes empties, lowercases/normalizes if you like
-     */
+    private function storeProjectFiles(Request $request): array
+    {
+        if (!$request->hasFile('project_files')) {
+            return [];
+        }
+
+        $storedFiles = [];
+
+        foreach ($request->file('project_files') as $file) {
+            $fileName = uniqid() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('projects/files', $fileName, 'public');
+
+            $storedFiles[] = [
+                'name' => $file->getClientOriginalName(),
+                'path' => $path,
+                'mime' => $file->getClientMimeType(),
+                'size' => $file->getSize(),
+            ];
+        }
+
+        return $storedFiles;
+    }
+
+    private function removeSelectedProjectFiles(array $files, array $indexesToRemove): array
+    {
+        $indexesToRemove = array_map('intval', $indexesToRemove);
+
+        foreach ($indexesToRemove as $index) {
+            if (isset($files[$index]['path'])) {
+                Storage::disk('public')->delete($files[$index]['path']);
+                unset($files[$index]);
+            }
+        }
+
+        return array_values($files);
+    }
+
     private function normalizeTags($tags): array
     {
         if (is_null($tags) || $tags === '') {
@@ -148,13 +195,10 @@ class ProjectController extends Controller
         } elseif (is_array($tags)) {
             $parts = array_map(fn($t) => is_string($t) ? trim($t) : $t, $tags);
         } else {
-            // unexpected type: cast to empty
             return [];
         }
 
-        // remove empty values and duplicates (case-insensitive unique optional)
-        $parts = array_values(array_filter($parts, fn($t) => $t !== '' && $t !== null));
-
-        return $parts;
+        return array_values(array_filter($parts, fn($t) => $t !== '' && $t !== null));
     }
 }
+
